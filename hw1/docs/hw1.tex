@@ -1,0 +1,125 @@
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+\usepackage{listings}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+\lstset{
+  language=C,                % choose the language of the code
+  numbers=left,                   % where to put the line-numbers
+  stepnumber=1,                   % the step between two line-numbers.        
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  tabsize=8,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                 % show the filename of files included with \lstinputlisting;
+}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\newcommand{\toc}{\tableofcontents}
+
+%\usepackage{hyperref}
+
+\def\name{Leon Leighton, Alec Merdler, Arthur Shing}
+
+%pull in the necessary preamble matter for pygments output
+\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+% \hypersetup{
+%   colorlinks = false,
+%   urlcolor = black,
+%   pdfauthor = {\name},
+%   pdfkeywords = {cs311 ``operating systems'' files filesystem I/O},
+%   pdftitle = {CS 311 Project 1: UNIX File I/O},
+%   pdfsubject = {CS 311 Project 1},
+%   pdfpagemode = UseNone
+% }
+
+\parindent = 0.0 in
+\parskip = 0.1 in
+
+\begin{document}
+\name
+
+\tableofcontents
+
+%input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
+%this file only exists at compile time. Feel free to change that.
+
+
+\section{Project 1}
+\subsection{Log of Commands}
+After logging into os-class. 
+\begin{enumerate}
+\item cd /scratch/spring2017/
+\item mkdir 11-09
+\item cd 11-09
+\item git clone git://git.yoctoproject.org/linux-yocto-3.14
+\item cd linux-yocto-3.14/
+\item git checkout -b v3.14.26 v3.14.26
+\item cd ..
+\item source /scratch/opt/environment-setup-i586-poky-linux
+\item qemu-system-i386 -gdb tcp::6609 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext3,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+\item (In different terminal) gdb
+\item (In different terminal) (gdb) target remote :6611
+\item (In different terminal) (gdb) c
+\item (In VM) uname -r
+\item (In VM - output) 3.14.26ltsi-yocto-standard
+\item cp /scratch/spring2017/files/config-3.14.26-yocto-qemu .config
+\item cd linux-yocto-3.14/
+\item (In menuconfig) Press / and type in LOCALVERSION, press enter 
+\item (In menuconfig) Hit 1, press enter and then edit the value to be -11-09-hw1 
+\item make menuconfig
+\item make -j4 all
+\item make bzImage
+\item cd ..
+\item qemu-system-i386 -gdb tcp::6609 -S -nographic -kernel linux-yocto-3.14/arch/x86/boot/bzImage -drive file=core-image-lsb-sdk-qemux86.ext3,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+\item (In different terminal) gdb
+\item (In different terminal) (gdb) target remote :6611
+\item (In different terminal) (gdb) c
+\item (In VM) uname -r
+\item (In VM - output) 3.14.26-11-09-hw1
+\end{enumerate}
+\subsection{QEMU Flags}
+\begin{itemize}
+  \item -gdb: Wait for gdb connection on a device. In our case a tcp connection on port 6609.
+  \item -S: Do not start CPU at startup. Forces typing 'c' in gdb
+  \item -nographic: Disables graphical output
+  \item -kernel: Kernel image to use
+  \item -drive file,if: Which disk image file to use as a drive connected to an interface. In our case this is a connected to the virtio interface. 
+  \item -enable-kvm: Enable KVM virtualization support. 
+  \item -net: Network interface. In our case, none means to not setup a network interface.
+  \item -usb: Enable USB driver
+  \item -localtime: Set the real time clock to local time
+  \item --no-reboot: Quite instead of rebooting. 
+  \item --append: Kernel command line option.  
+\end{itemize}
+
+%\section*{Appendix 1: Source Code}
+%\lstinputlisting{hw1.c}
+\end{document}
