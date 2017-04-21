@@ -26,8 +26,6 @@ int our_rand(int min, int max)
 	                     );
 
 	if(ecx & 0x40000000){
-		//use rdrand
-		printf("using rdrand: \n");
 		unsigned int tmp = 0;
 		__asm__ __volatile__(
 				     "rdrand %0;"
@@ -38,7 +36,6 @@ int our_rand(int min, int max)
 	}
 	else{
 		//use mt19937
-		printf("using mt19937\n");
 		unsigned long s = time(NULL);
 		init_genrand(s);
 		r = (genrand_int32() % (max - min + 1)) + min;
