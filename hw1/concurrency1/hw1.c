@@ -75,26 +75,27 @@ int main(int argc, char **argv)
 	int num_threads = atoi(argv[1]);
 	int i;
 
-	printf("Num of threads: %d\n", num_threads);
-	pthread_t producer;
-	pthread_t consumer;
+	printf("Number of threads: %d\n", num_threads);
+
+	pthread_t threads[num_threads * 2];
 
 	for (i = 0; i < num_threads; i++) {
-		if(pthread_create(&producer, NULL, producer_function, &buffer)) {
+		if(pthread_create(&threads[i], NULL, producer_function, NULL)) {
 			printf("Error creating producer thread");
 			return 1;
 		}
 	}
 
-	for (i = 0; i < num_threads; i++) {
-		if(pthread_create(&consumer, NULL, consumer_function, &buffer)) {
+	for (i = num_threads; i < (num_threads * 2); i++) {
+		if(pthread_create(&threads[i], NULL, consumer_function, &buffer)){
 			printf("Error creating consumer thread");
 			return 1;
 		}
 	}
 
-	pthread_join(producer, NULL);
-	pthread_join(consumer, NULL);
+	for (i = 0; i < (num_threads * 2); i++) {
+		pthread_join(threads[i], NULL);
+	}
 
 	return 0;
 }
