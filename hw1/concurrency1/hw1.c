@@ -75,19 +75,19 @@ int main(int argc, char **argv)
 	}
 	int num_prod = atoi(argv[1]);
 	int num_csmr = atoi(argv[2]);
-
+	int i;
 
 	pthread_t producer;
 	pthread_t consumer;
 
-	for (int i; i <= num_prod; i++) {
+	for (i = 0; i <= num_prod; i++) {
 		if(pthread_create(&producer, NULL, producer_function, &buffer)) {
 			printf("Error creating producer thread");
 			return 1;
 		}
 	}
 
-	for (int i; i <= num_csmr; i++) {
+	for (i = 0; i <= num_csmr; i++) {
 		if(pthread_create(&consumer, NULL, consumer_function, &buffer)) {
 			printf("Error creating consumer thread");
 			return 1;
