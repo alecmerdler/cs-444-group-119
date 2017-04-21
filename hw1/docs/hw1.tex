@@ -1,11 +1,11 @@
-\documentclass[letterpaper,10pt]{article}
+\documentclass[draftclsnofoot, onecolumn, 10pt]{IEEEtran}
 
-\usepackage{graphicx}                                        
-\usepackage{amssymb}                                         
-\usepackage{amsmath}                                         
-\usepackage{amsthm}                                          
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
 
-\usepackage{alltt}                                           
+\usepackage{alltt}
 \usepackage{float}
 \usepackage{color}
 \usepackage{url}
@@ -22,7 +22,7 @@
 \lstset{
   language=C,                % choose the language of the code
   numbers=left,                   % where to put the line-numbers
-  stepnumber=1,                   % the step between two line-numbers.        
+  stepnumber=1,                   % the step between two line-numbers.
   numbersep=5pt,                  % how far the line-numbers are from the code
   backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
   showspaces=false,               % show spaces adding particular underscores
@@ -44,7 +44,7 @@
 
 %\usepackage{hyperref}
 
-\def\name{Leon Leighton, Alec Merdler, Arthur Shing}
+%\def\name{Leon Leighton, Alec Merdler, Arthur Shing}
 
 %pull in the necessary preamble matter for pygments output
 \input{pygments.tex}
@@ -54,17 +54,29 @@
 %   colorlinks = false,
 %   urlcolor = black,
 %   pdfauthor = {\name},
-%   pdfkeywords = {cs311 ``operating systems'' files filesystem I/O},
-%   pdftitle = {CS 311 Project 1: UNIX File I/O},
-%   pdfsubject = {CS 311 Project 1},
+%   pdfkeywords = {cs444 ``operating systems'' files filesystem I/O},
+%   pdftitle = {CS 444 Project 1: Getting Acquainted},
+%   pdfsubject = {CS 444 Project 1},
 %   pdfpagemode = UseNone
 % }
 
 \parindent = 0.0 in
 \parskip = 0.1 in
 
+
 \begin{document}
-\name
+\title{Project 1: Getting Acquainted}
+\author{Leon Leighton, Alec Merdler, and Arthur Shing}
+
+\begin{titlepage}
+    \centering
+%    \name
+    \maketitle
+    \begin{abstract}
+    \end{abstract}
+
+
+\end{titlepage}
 
 \tableofcontents
 
@@ -74,7 +86,7 @@
 
 \section{Project 1}
 \subsection{Log of Commands}
-After logging into os-class. 
+After logging into os-class.
 \begin{enumerate}
 \item cd /scratch/spring2017/
 \item mkdir 11-09
@@ -92,8 +104,8 @@ After logging into os-class.
 \item (In VM - output) 3.14.26ltsi-yocto-standard
 \item cp /scratch/spring2017/files/config-3.14.26-yocto-qemu .config
 \item cd linux-yocto-3.14/
-\item (In menuconfig) Press / and type in LOCALVERSION, press enter 
-\item (In menuconfig) Hit 1, press enter and then edit the value to be -11-09-hw1 
+\item (In menuconfig) Press / and type in LOCALVERSION, press enter
+\item (In menuconfig) Hit 1, press enter and then edit the value to be -11-09-hw1
 \item make menuconfig
 \item make -j4 all
 \item make bzImage
@@ -111,14 +123,27 @@ After logging into os-class.
   \item -S: Do not start CPU at startup. Forces typing 'c' in gdb
   \item -nographic: Disables graphical output
   \item -kernel: Kernel image to use
-  \item -drive file,if: Which disk image file to use as a drive connected to an interface. In our case this is a connected to the virtio interface. 
-  \item -enable-kvm: Enable KVM virtualization support. 
+  \item -drive file,if: Which disk image file to use as a drive connected to an interface. In our case this is a connected to the virtio interface.
+  \item -enable-kvm: Enable KVM virtualization support.
   \item -net: Network interface. In our case, none means to not setup a network interface.
   \item -usb: Enable USB driver
   \item -localtime: Set the real time clock to local time
-  \item --no-reboot: Quite instead of rebooting. 
-  \item --append: Kernel command line option.  
+  \item --no-reboot: Quite instead of rebooting.
+  \item --append: Kernel command line option.
 \end{itemize}
+\subsection{Concurrency 1}
+In this assignment, we attempted to implement a solution to the producer-consumer problem. The problem states that producers cannot
+add to a shared buffer if the buffer is full, and consumers cannot take from the buffer if it is empty. Producer or consumer threads
+must also have exclusive access to the buffer.
+
+We think the main point of this assignment was to become familiar with multi-threaded programming. In this exercise, we
+created multiple threads and managed how they interact with a shared resource. Managing how producers/consumers interact
+with the buffer helped us practice using mutexes. Overall this assignment reminds us that managing shared resources is an
+important part of parallel programming.
+
+We decided to utilize a mutex for the exercise.
+
+
 
 %\section*{Appendix 1: Source Code}
 %\lstinputlisting{hw1.c}
