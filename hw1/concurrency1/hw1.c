@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "our_rand.h"
+#include "mt19937ar.h"
 
 
 #define ITEM_BUFFER_SIZE 32
@@ -67,6 +68,10 @@ void *consumer_function(void *ptr)
 
 int main(int argc, char **argv)
 {
+
+    //Generate Seed
+    unsigned long s = time(NULL);
+    init_genrand(s);
 
 	if (argc < 1) {
 		printf("Usage: %s [number of threads]\n" , argv[0]);
