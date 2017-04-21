@@ -68,15 +68,16 @@ void *consumer_function(void *ptr)
 
 int main(int argc, char **argv)
 {
-
-    //Generate Seed
-    unsigned long s = time(NULL);
-    init_genrand(s);
-
-	if (argc < 1) {
-		printf("Usage: %s [number of threads]\n" , argv[0]);
+	if (argc < 2) {
+		printf("Usage: %s [number of threads]\n", argv[0]);
 		return 1;
 	}
+
+	//Generate Seed
+	unsigned long s = time(NULL);
+	init_genrand(s);
+
+
 	int num_threads = atoi(argv[1]);
 	int i;
 
