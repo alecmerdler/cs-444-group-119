@@ -56,12 +56,11 @@ void *consumer_function(void *ptr)
 			pthread_mutex_unlock(&lock);
 			continue;
 		}
-		tmp = buffer[b_index];
 		b_index--;
-		pthread_mutex_unlock(&lock);
 		done = 1;
-		sleep(tmp.wait_time);
-		printf("Consumed %d\n", tmp.value);
+		sleep(buffer[b_index].wait_time);
+		printf("Consumed %d\n", buffer[b_index].value);
+		pthread_mutex_unlock(&lock);
 	}
 }
 
