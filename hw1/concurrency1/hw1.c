@@ -65,25 +65,37 @@ void *consumer_function(void *ptr)
 }
 
 
-int main()
+int main(int argc, char **argv)
 {
-    pthread_t producer;
-    pthread_t consumer;
 
-    if (pthread_create(&producer, NULL, producer_function, &buffer))
-    {
-        printf("Error creating producer thread");
-        return 1;
-    }
+	if (argc < 2) {
+		printf("Usage: %s [number of producers] [number of consumers]\n"
+		       , argv[0]);
+		return 1;
+	}
+	int num_prod = atoi(argv[1]);
+	int num_csmr = atoi(argv[2]);
 
-    if (pthread_create(&consumer, NULL, consumer_function, &buffer))
-    {
-        printf("Error creating consumer thread");
-        return 1;
-    }
 
-    pthread_join(producer, NULL);
-    pthread_join(consumer, NULL);
+	pthread_t producer;
+	pthread_t consumer;
 
-    return 0;
+	for (int i; i <= num_prod; i++) {
+		if(pthread_create(&producer, NULL, producer_function, &buffer)) {
+			printf("Error creating producer thread");
+			return 1;
+		}
+	}
+
+	for (int i; i <= num_csmr; i++) {
+		if(pthread_create(&consumer, NULL, consumer_function, &buffer)) {
+			printf("Error creating consumer thread");
+			return 1;
+		}
+	}
+
+	pthread_join(producer, NULL);
+	pthread_join(consumer, NULL);
+
+	return 0;
 }
