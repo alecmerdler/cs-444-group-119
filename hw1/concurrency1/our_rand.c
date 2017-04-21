@@ -6,7 +6,7 @@
 #include <time.h>
 #include "mt19937ar.h"
 
-int our_rand(int min, int max)
+int our_rand(int min, int max )
 {
 	unsigned int eax;
 	unsigned int ebx;
@@ -36,8 +36,6 @@ int our_rand(int min, int max)
 	}
 	else{
 		//use mt19937
-		unsigned long s = time(NULL);
-		init_genrand(s);
 		r = (genrand_int32() % (max - min + 1)) + min;
 	}
 
