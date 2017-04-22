@@ -142,6 +142,15 @@ created multiple threads and managed how they interact with a shared resource. M
 with the buffer helped us practice using mutexes. Overall this assignment reminds us that managing shared resources is an
 important part of concurrency programming.
 
+We decided to utilize a mutex for the exercise to manage exclusive access to the buffer. A thread first locks the buffer, changes it,
+and then unlocks it. While the mutex is locked, other threads are blocked until it is unlocked. Threads are also blocked from the buffer
+while the buffer is full (for producers) or empty (for consumers). To implement the random number generator, we used a separate file that
+generated numbers using rdrand or the Mersenne Twister, depending on support.
+
+To test our implementation, we ran it with a smaller buffer to check if the blocks were occurring when the buffer was full or empty.
+We also tested random number generation and thread handling by running it with a large amount of threads.
+
+
 \subsection{Work Log}
 All three members contributed to this homework assignment.
 Members worked both remotely and met to work on the assignment in person.
