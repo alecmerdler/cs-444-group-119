@@ -1,0 +1,10 @@
+We have included a makefile for ease of compilation. Running 'make' will
+produce an executable named 'hw1'. Our program requires passing the number
+of threads as an argument, and will be used for both consumer and producer
+threads. That is if you pass in '10', there will be 10 consumer threads
+and 10 producer threads for a total of 20 threads.
+
+Example:
+
+$ make
+$ ./hw1 10
