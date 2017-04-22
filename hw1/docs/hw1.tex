@@ -15,7 +15,7 @@
 \usepackage[TABBOTCAP, tight]{subfigure}
 \usepackage{enumitem}
 \usepackage{pstricks, pst-node}
-
+\usepackage{placeins}
 \usepackage{geometry}
 \geometry{textheight=8.5in, textwidth=6in}
 
@@ -79,7 +79,7 @@
 \end{titlepage}
 
 \tableofcontents
-
+\clearpage
 %input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
 %this file only exists at compile time. Feel free to change that.
 
@@ -131,7 +131,7 @@ After logging into os-class.
   \item --no-reboot: Quite instead of rebooting.
   \item --append: Kernel command line option.
 \end{itemize}
-\subsection{Concurrency 1}
+\section{Concurrency 1}
 In this assignment, we attempted to implement a solution to the producer-consumer problem. The problem states that producers cannot
 add to a shared buffer if the buffer is full, and consumers cannot take from the buffer if it is empty. Producer or consumer threads
 must also have exclusive access to the buffer.
@@ -144,8 +144,8 @@ important part of parallel programming.
 We decided to utilize a mutex for the exercise.
 
 
-
 \subsection{Version Control Log}
+\FloatBarrier
 \begin{table}
     \begin{tabular}{lp{12cm}}
       \label{tabular:legend:git-log}
@@ -173,8 +173,10 @@ We decided to utilize a mutex for the exercise.
     \hline 11 & Lee Leighton & 2017-04-21 & Use same number of threads for both consumers and producers & 1 & 6 & 7 \\
     \hline 12 & Lee Leighton & 2017-04-21 & Keep track of threads ids in one array & 1 & 9 & 8 \\
     \hline 13 & Arthur Shing & 2017-04-21 & Moved seed generation to hw1.c & 2 & 6 & 3 \\
+    \hline
 \end{tabular}
 \end{table}
+\FloatBarrier
 
 
 %\section*{Appendix 1: Source Code}
