@@ -17,6 +17,7 @@
 \usepackage{pstricks, pst-node}
 \usepackage{placeins}
 \usepackage{geometry}
+\usepackage{hyperref}
 \geometry{textheight=8.5in, textwidth=6in}
 
 \lstset{
@@ -42,23 +43,20 @@
 
 \newcommand{\toc}{\tableofcontents}
 
-%\usepackage{hyperref}
 
-%\def\name{Leon Leighton, Alec Merdler, Arthur Shing}
-
-%pull in the necessary preamble matter for pygments output
-\input{pygments.tex}
+\def\name{Leon Leighton, Alec Merdler, Arthur Shing}
 
 %% The following metadata will show up in the PDF properties
-% \hypersetup{
-%   colorlinks = false,
-%   urlcolor = black,
-%   pdfauthor = {\name},
-%   pdfkeywords = {cs444 ``operating systems'' files filesystem I/O},
-%   pdftitle = {CS 444 Project 1: Getting Acquainted},
-%   pdfsubject = {CS 444 Project 1},
-%   pdfpagemode = UseNone
-% }
+\hypersetup{
+   colorlinks = true,
+   urlcolor = black,
+   linkcolor = black,
+   pdfauthor = {\name},
+   pdfkeywords = {cs444 ``operating systems'' files filesystem I/O},
+   pdftitle = {CS 444 Project 1: Getting Acquainted},
+   pdfsubject = {CS 444 Project 1},
+   pdfpagemode = UseNone
+}
 
 \parindent = 0.0 in
 \parskip = 0.1 in
@@ -151,20 +149,20 @@ To test our implementation, we ran it with a smaller buffer to check if the bloc
 We also tested random number generation and thread handling by running it with a large amount of threads. 
 
 \subsection{Work Log}
+<<<<<<< HEAD
 All three members contributed to this homework assignment.
 
 
+=======
+All three members contributed to this homework assignment.
+Members worked both remotely and met to work on the assignment in person.
+Collaboration, when not in person, was primarily done through email and GitHub.
+The majority of the programming was done Wednesday through Friday with most of the actual commits taking place on Friday.
+>>>>>>> upstream/master
 \subsection{Version Control Log}
+The Git Log is slightly inaccurate due to both in person collaboration and a delay in granting of rights to the repository.
 \FloatBarrier
-\begin{table}
-    \begin{tabular}{lp{12cm}}
-      \label{tabular:legend:git-log}
-      \textbf{acronym} & \textbf{meaning} \\
-      V & \texttt{version} \\
-      MF & Number of \texttt{modified files}. \\
-      AL & Number of \texttt{added lines}. \\
-      DL & Number of \texttt{deleted lines}. \\
-    \end{tabular}
+\begin{table}[h!]
 \centering
 \caption{Git Log}
 % \label{git-log}
@@ -184,6 +182,14 @@ All three members contributed to this homework assignment.
     \hline 12 & Lee Leighton & 2017-04-21 & Keep track of threads ids in one array & 1 & 9 & 8 \\
     \hline 13 & Arthur Shing & 2017-04-21 & Moved seed generation to hw1.c & 2 & 6 & 3 \\
     \hline
+\end{tabular}
+\begin{tabular}{lp{12cm}}
+  \label{tabular:legend:git-log}
+  \textbf{acronym} & \textbf{meaning} \\
+  V & \texttt{version} \\
+  MF & Number of \texttt{modified files}. \\
+  AL & Number of \texttt{added lines}. \\
+  DL & Number of \texttt{deleted lines}. \\
 \end{tabular}
 \end{table}
 \FloatBarrier
