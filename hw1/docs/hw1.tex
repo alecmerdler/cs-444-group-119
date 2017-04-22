@@ -68,9 +68,13 @@
 
 \begin{titlepage}
     \centering
-%    \name
     \maketitle
     \begin{abstract}
+      This document provides an overview of the work done by Group 11-09 for Project 1: Getting Acquainted.
+      It includes the list of commands used to build our own kernel and verify that we booted it using QEMU on os-class.
+      It also contains a description of the QEMU flags used to boot our kernel.
+      Also included is the write up for our work on the Concurrency 1 programming assignment.
+      This includes answers to questions asked in the assignment description, a work log, and the git version control log.
     \end{abstract}
 
 
@@ -78,8 +82,6 @@
 
 \tableofcontents
 \clearpage
-%input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
-%this file only exists at compile time. Feel free to change that.
 
 
 \section{Project 1}
@@ -140,25 +142,11 @@ created multiple threads and managed how they interact with a shared resource. M
 with the buffer helped us practice using mutexes. Overall this assignment reminds us that managing shared resources is an
 important part of concurrency programming.
 
-We decided to utilize a mutex for the exercise to manage exclusive access to the buffer. A thread first locks the buffer, changes it,
-and then unlocks it. While the mutex is locked, other threads are blocked until it is unlocked. Threads are also blocked from the buffer
-while the buffer is full (for producers) or empty (for consumers). To implement the random number generator, we used a separate file that
-generated numbers using rdrand or the Mersenne Twister, depending on support.
-
-To test our implementation, we ran it with a smaller buffer to check if the blocks were occurring when the buffer was full or empty.
-We also tested random number generation and thread handling by running it with a large amount of threads. 
-
 \subsection{Work Log}
-<<<<<<< HEAD
-All three members contributed to this homework assignment.
-
-
-=======
 All three members contributed to this homework assignment.
 Members worked both remotely and met to work on the assignment in person.
 Collaboration, when not in person, was primarily done through email and GitHub.
 The majority of the programming was done Wednesday through Friday with most of the actual commits taking place on Friday.
->>>>>>> upstream/master
 \subsection{Version Control Log}
 The Git Log is slightly inaccurate due to both in person collaboration and a delay in granting of rights to the repository.
 \FloatBarrier
