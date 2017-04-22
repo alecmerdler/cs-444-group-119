@@ -67,6 +67,7 @@
 \author{Leon Leighton, Alec Merdler, and Arthur Shing}
 
 \begin{titlepage}
+    \pagenumbering{gobble}
     \centering
     \maketitle
     \begin{abstract}
@@ -79,7 +80,7 @@
 
 
 \end{titlepage}
-
+\pagenumbering{arabic}
 \tableofcontents
 \clearpage
 
@@ -131,6 +132,7 @@ After logging into os-class.
   \item --no-reboot: Quite instead of rebooting.
   \item --append: Kernel command line option.
 \end{itemize}
+\clearpage
 \section{Concurrency 1}
 In this assignment, we attempted to implement a solution to the producer-consumer problem. The problem states that producers cannot
 add to a shared buffer if the buffer is full, and consumers cannot take from the buffer if it is empty. Producer or consumer threads
@@ -158,6 +160,7 @@ All three members contributed to this homework assignment.
 Members worked both remotely and met to work on the assignment in person.
 Collaboration, when not in person, was primarily done through email and GitHub.
 The majority of the programming was done Wednesday through Friday with most of the actual commits taking place on Friday.
+\clearpage
 \subsection{Version Control Log}
 The Git Log is slightly inaccurate due to both in person collaboration and a delay in granting of rights to the repository.
 \FloatBarrier
