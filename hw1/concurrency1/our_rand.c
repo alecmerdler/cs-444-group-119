@@ -1,3 +1,9 @@
+/* CS444 Project 1: Concurrency 1
+ * Group 11-09
+ * Members: Leon Leighton, Alec Merdler, Arthur Shing
+ */
+
+
 /*
  * Modified from rdrand_test.c provided on class website
  */

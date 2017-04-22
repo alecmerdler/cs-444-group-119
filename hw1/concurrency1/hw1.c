@@ -1,3 +1,8 @@
+/* CS444 Project 1: Concurrency 1
+ * Group 11-09
+ * Members: Leon Leighton, Alec Merdler, Arthur Shing
+ */
+
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
