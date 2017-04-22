@@ -1,4 +1,4 @@
-\documentclass[draftclsnofoot, onecolumn, 10pt]{IEEEtran}
+\documentclass[journal, letterpaper, draftclsnofoot, onecolumn, 10pt]{IEEEtran}
 
 \usepackage{graphicx}
 \usepackage{amssymb}
@@ -143,6 +143,38 @@ important part of parallel programming.
 
 We decided to utilize a mutex for the exercise.
 
+
+
+\subsection{Version Control Log}
+\begin{table}
+    \begin{tabular}{lp{12cm}}
+      \label{tabular:legend:git-log}
+      \textbf{acronym} & \textbf{meaning} \\
+      V & \texttt{version} \\
+      MF & Number of \texttt{modified files}. \\
+      AL & Number of \texttt{added lines}. \\
+      DL & Number of \texttt{deleted lines}. \\
+    \end{tabular}
+\centering
+\caption{Git Log}
+% \label{git-log}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline \textbf{Version} & \textbf{Author} & \textbf{Date} & \textbf{commit message} & \textbf{MF} & \textbf{AL} & \textbf{DL}  \\
+    \hline 1 & alecmerdler & 2017-04-11 & initial commit & 2 & 0 & 0 \\
+    \hline 2 & alecmerdler & 2017-04-13 & added .gitignore & 1 & 1 & 0 \\
+    \hline 3 & alecmerdler & 2017-04-14 & starting concurrency \#1 & 2 & 49 & 1 \\
+    \hline 4 & Lee Leighton & 2017-04-18 & Add our\_rand code. Uses rdrand or mt19937 to return random number & 5 & 309 & 0 \\
+    \hline 5 & Lee Leighton & 2017-04-20 & Docs folder with latex files. Initial write for the qemu portion. & 3 & 262 & 0 \\
+    \hline 6 & Lee Leighton & 2017-04-20 & Merge pull request \#1 from leel8on/leel8on/random & 0 & 0 & 0 \\
+    \hline 7 & Lee Leighton & 2017-04-21 & Changing where buffer is created. Add mutex locking and creation of item & 2 & 46 & 6 \\
+    \hline 8 & Lee Leighton & 2017-04-21 & Fix how consumer access the item & 1 & 3 & 4 \\
+    \hline 9 & Lee Leighton & 2017-04-21 & Add multiple threads for both consumer and producer specified as arguments & 1 & 28 & 16 \\
+    \hline 10 & Lee Leighton & 2017-04-21 & Fix for loop index intialization & 1 & 3 & 3 \\
+    \hline 11 & Lee Leighton & 2017-04-21 & Use same number of threads for both consumers and producers & 1 & 6 & 7 \\
+    \hline 12 & Lee Leighton & 2017-04-21 & Keep track of threads ids in one array & 1 & 9 & 8 \\
+    \hline 13 & Arthur Shing & 2017-04-21 & Moved seed generation to hw1.c & 2 & 6 & 3 \\
+\end{tabular}
+\end{table}
 
 
 %\section*{Appendix 1: Source Code}
