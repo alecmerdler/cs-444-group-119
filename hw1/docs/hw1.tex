@@ -98,7 +98,7 @@ After logging into os-class.
 \item source /scratch/opt/environment-setup-i586-poky-linux
 \item qemu-system-i386 -gdb tcp::6609 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext3,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
 \item (In different terminal) gdb
-\item (In different terminal) (gdb) target remote :6611
+\item (In different terminal) (gdb) target remote :6609
 \item (In different terminal) (gdb) c
 \item (In VM) uname -r
 \item (In VM - output) 3.14.26ltsi-yocto-standard
