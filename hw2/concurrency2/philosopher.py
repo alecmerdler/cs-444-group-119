@@ -5,14 +5,6 @@ import os
 
 
 # Inspired by: https://rosettacode.org/wiki/Dining_philosophers#Python
-
-
-# Dining philosophers, 5 philosophers with 5 forks. Must have two forks to eat.
-#
-# Deadlock is avoided by never waiting for a fork while holding a fork (locked)
-# Procedure is to do block while waiting to get first fork, and a nonblocking
-# acquire of second fork.  If failed to get second fork, release first fork,
-# swap which fork is first and which is second and retry until getting both.
 class Philosopher(threading.Thread):
     """ Represents a philosopher, who has the ability to think, get forks, eat, and drop forks.
     """
@@ -58,6 +50,9 @@ class Philosopher(threading.Thread):
             self.has_forks = True
 
     def eat(self):
+        """ If both forks are in our possession, eat for a random duration.
+        """
+
         if self.has_forks:
             print '%s starts eating.' % self.name
             time.sleep(random.uniform(2, 10))
@@ -66,6 +61,9 @@ class Philosopher(threading.Thread):
             raise ValueError('%s tried to eat without both forks.' % self.name)
 
     def put_forks(self):
+        """ If both forks are in our possession, drop them.
+        """
+
         if self.has_forks:
             print '%s drops both forks.'% self.name
             self.left_fork.release()
@@ -75,7 +73,7 @@ class Philosopher(threading.Thread):
             raise ValueError('%s tried to drop forks it didn\'t have.'% self.name)
 
 
-def DiningPhilosophers():
+def dining_philosophers():
     """ Run the dining philosopher simulation.
     """
 
@@ -91,7 +89,7 @@ def DiningPhilosophers():
         p.start()
 
     # Stop the simulation after n seconds
-    time.sleep(100)
+    time.sleep(20)
     Philosopher.running = False
     print ("Now we're finishing.")
 
@@ -100,6 +98,6 @@ if __name__ == "__main__":
     # for Ctrl+C
     try:
         while True:
-            DiningPhilosophers()
+            dining_philosophers()
     except KeyboardInterrupt:
         os._exit(0)

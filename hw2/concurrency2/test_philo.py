@@ -1,4 +1,4 @@
-from philosopher import Philosopher, DiningPhilosophers
+from philosopher import Philosopher, dining_philosophers
 
 
 def test_prevents_deadlock():
