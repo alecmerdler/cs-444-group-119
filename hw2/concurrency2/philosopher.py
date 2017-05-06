@@ -73,7 +73,7 @@ class Philosopher(threading.Thread):
             raise ValueError('%s tried to drop forks it didn\'t have.'% self.name)
 
 
-def dining_philosophers(forks, philosopher_names):
+def dining_philosophers(forks, philosopher_names, duration=20):
     """ Run the dining philosopher simulation.
     """
 
@@ -85,9 +85,9 @@ def dining_philosophers(forks, philosopher_names):
         p.start()
 
     # Stop the simulation after n seconds
-    time.sleep(20)
+    time.sleep(duration)
     Philosopher.running = False
-    print ("Now we're finishing.")
+    print ("Now we're finished.")
 
 
 if __name__ == "__main__":
@@ -97,9 +97,8 @@ if __name__ == "__main__":
     random.seed(507129)
 
     try:
-        while True:
-            dining_philosophers(forks, philosopher_names)
-
+        dining_philosophers(forks, philosopher_names)
+        time.sleep(0.5)
     # for Ctrl+C
     except KeyboardInterrupt:
         os._exit(0)
