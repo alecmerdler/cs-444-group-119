@@ -21,7 +21,6 @@ struct sstf_data {
 	struct list_head queue;
 };
 
-
 /*
  * Identical implementation as noop.
  */
@@ -30,7 +29,6 @@ static void sstf_merged_requests(struct request_queue *q, struct request *rq,
 {
 	list_del_init(&next->queuelist);
 }
-
 
 /*
  * Mostly the same as noop, except for adding request to tail of queue instead of
@@ -53,9 +51,8 @@ static int sstf_dispatch(struct request_queue *q, int force)
 	return 0;
 }
 
-
 /*
- * TODO
+ * Add a request to the queue using insertion sort.
  */
 static void sstf_add_request(struct request_queue *q, struct request *rq)
 {
@@ -65,22 +62,25 @@ static void sstf_add_request(struct request_queue *q, struct request *rq)
 
 	if (list_empty(&sd->queue)) {
 		printk(KERN_DEBUG "SSTF: queue list empty adding item to queue. \n");
+
+		// If queue is empty, simply add request to the queue
 		list_add(&rq->queuelist, &sd->queue);
 	} else {
-
-		list_for_each(curr_pos,&sd->queue) {
+	    // Use macro to iterate over queue list
+		list_for_each(curr_pos, &sd->queue) {
 			curr_node = list_entry(curr_pos, struct request, queuelist);
 
-			if(blk_rq_pos(curr_node) < blk_rq_pos(rq)){
+            // Check if the new request has a higher position
+			if (blk_rq_pos(curr_node) < blk_rq_pos(rq)) {
 				printk(KERN_DEBUG "SSTF: add_request: inserting  item via insert sort. \n");
 
+                // Add the new request and stop iteration
 				list_add(&rq->queuelist, &curr_node->queuelist);
 				break;
 			}
 		}
 	}
 }
-
 
 /*
  * Identical implementation as noop.
@@ -95,7 +95,6 @@ sstf_former_request(struct request_queue *q, struct request *rq)
 
 	return list_entry(rq->queuelist.prev, struct request, queuelist);
 }
-
 
 /*
  * Identical implementation as noop.
@@ -139,7 +138,6 @@ static int sstf_init_queue(struct request_queue *q, struct elevator_type *e)
 	return 0;
 }
 
-
 /*
  * Identical implementation as noop.
  */
@@ -151,7 +149,9 @@ static void sstf_exit_queue(struct elevator_queue *e)
 	kfree(sd);
 }
 
-
+/*
+ * Identical implementation as noop.
+ */
 static struct elevator_type elevator_sstf = {
 	.ops = {
 		.elevator_merge_req_fn		= sstf_merged_requests,
@@ -166,7 +166,6 @@ static struct elevator_type elevator_sstf = {
 	.elevator_owner = THIS_MODULE,
 };
 
-
 /*
  * Identical implementation as noop.
  */
@@ -175,7 +174,6 @@ static int __init sstf_init(void)
 	return elv_register(&elevator_sstf);
 }
 
-
 /*
  * Identical implementation as noop.
  */
@@ -183,7 +181,6 @@ static void __exit sstf_exit(void)
 {
 	elv_unregister(&elevator_sstf);
 }
-
 
 module_init(sstf_init);
 module_exit(sstf_exit);
