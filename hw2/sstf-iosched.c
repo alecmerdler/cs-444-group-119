@@ -5,6 +5,7 @@
  *
  * Resources:
  * - http://classes.engr.oregonstate.edu/eecs/fall2011/cs411/proj03.pdf
+ * - http://www.makelinux.net/books/lkd2/ch13lev1sec5
  */
 #include <linux/blkdev.h>
 #include <linux/elevator.h>
@@ -21,6 +22,9 @@ struct sstf_data {
 };
 
 
+/*
+ * Identical implementation as noop.
+ */
 static void sstf_merged_requests(struct request_queue *q, struct request *rq,
 				 struct request *next)
 {
@@ -28,6 +32,10 @@ static void sstf_merged_requests(struct request_queue *q, struct request *rq,
 }
 
 
+/*
+ * Mostly the same as noop, except for adding request to tail of queue instead of
+ * sorting.
+ */
 static int sstf_dispatch(struct request_queue *q, int force)
 {
 	struct sstf_data *sd = q->elevator->elevator_data;
@@ -46,6 +54,9 @@ static int sstf_dispatch(struct request_queue *q, int force)
 }
 
 
+/*
+ * TODO
+ */
 static void sstf_add_request(struct request_queue *q, struct request *rq)
 {
 	struct sstf_data *sd = q->elevator->elevator_data;
@@ -53,7 +64,7 @@ static void sstf_add_request(struct request_queue *q, struct request *rq)
 	struct request *curr_node;
 
 	if (list_empty(&sd->queue)) {
-		printk(KERN_DEBUG "SSTF: queue list empty adding item to queue.\n");
+		printk(KERN_DEBUG "SSTF: queue list empty adding item to queue. \n");
 		list_add(&rq->queuelist, &sd->queue);
 	} else {
 
@@ -61,7 +72,7 @@ static void sstf_add_request(struct request_queue *q, struct request *rq)
 			curr_node = list_entry(curr_pos, struct request, queuelist);
 
 			if(blk_rq_pos(curr_node) < blk_rq_pos(rq)){
-				printk(KERN_DEBUG "SSTF: add_request: inserting  item via insert sort.\n");
+				printk(KERN_DEBUG "SSTF: add_request: inserting  item via insert sort. \n");
 
 				list_add(&rq->queuelist, &curr_node->queuelist);
 				break;
@@ -71,6 +82,9 @@ static void sstf_add_request(struct request_queue *q, struct request *rq)
 }
 
 
+/*
+ * Identical implementation as noop.
+ */
 static struct request *
 sstf_former_request(struct request_queue *q, struct request *rq)
 {
@@ -78,10 +92,14 @@ sstf_former_request(struct request_queue *q, struct request *rq)
 
 	if (rq->queuelist.prev == &sd->queue)
 		return NULL;
+
 	return list_entry(rq->queuelist.prev, struct request, queuelist);
 }
 
 
+/*
+ * Identical implementation as noop.
+ */
 static struct request *
 sstf_latter_request(struct request_queue *q, struct request *rq)
 {
@@ -92,7 +110,9 @@ sstf_latter_request(struct request_queue *q, struct request *rq)
 	return list_entry(rq->queuelist.next, struct request, queuelist);
 }
 
-
+/*
+ * Identical implementation as noop.
+ */
 static int sstf_init_queue(struct request_queue *q, struct elevator_type *e)
 {
 	struct sstf_data *sd;
@@ -120,6 +140,9 @@ static int sstf_init_queue(struct request_queue *q, struct elevator_type *e)
 }
 
 
+/*
+ * Identical implementation as noop.
+ */
 static void sstf_exit_queue(struct elevator_queue *e)
 {
 	struct sstf_data *sd = e->elevator_data;
@@ -144,12 +167,18 @@ static struct elevator_type elevator_sstf = {
 };
 
 
+/*
+ * Identical implementation as noop.
+ */
 static int __init sstf_init(void)
 {
 	return elv_register(&elevator_sstf);
 }
 
 
+/*
+ * Identical implementation as noop.
+ */
 static void __exit sstf_exit(void)
 {
 	elv_unregister(&elevator_sstf);
