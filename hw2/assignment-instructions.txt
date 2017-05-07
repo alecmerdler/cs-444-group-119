@@ -1,0 +1,49 @@
+________________
+IO scheduler
+Developing your solution on the virtual machine
+Develop your solution based off the currect FIFO (noop) implementation currently in the block directory.
+You will be required to write a new file titled sstf-iosched.c.make a copy of noop-iosched.c, call it sstf-iosched.c, and do a find/replace all instances of noop to sstf.
+Add some contents to the kconfig.iosched file in the block directory to get the file to compile
+_________________
+LOOK Scheduler
+Elevator algorithm
+Choose either both directions of travel or only servicing in one direction (LOOK or C-LOOK)
+LOOK services requests in both directions, while C-LOOK only services requests in the upwards direction.
+Don't forget to MERGE. Either front or back, not both.
+There will be at least 2 sorts involved.
+Maintain the queue in sorted order, use insertion sort.
+___________________
+Disabling virtio
+In hw1, we have qemu-system-i386 -gdb tcp::???? -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext3,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+New : qemu-system-i386 -gdb tcp::???? -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext3 -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/hda rw console=ttyS0 debug"
+specifically it is removing “,if=virtio” and changing “root=/dev/vda” to “root=/dev/sda”
+Removing virtio will cause a segfault during boot
+To solve this, change sda -> hda
+___________________
+Test your kernel
+generate some I/O. Write a script that does this WHICH RUNS ON THE VM
+Outputting sector numbers in requested order is a good first step
+In order to select this scheduler, either pass it as a command line option or use the /sys/block/hdc/queue/scheduler file at run time
+Ensure you are using the kernel they built, or this won’t work.
+____________________
+Use the build the product located in linux-yocto-3.14/arch/x86/boot/bzImage
+
+NOT    bzImage-qemux86.bin
+
+
+1. noop_iosched.c uses FCFS so we just need to maintain the request list as a queue. noop_add_request only adds the new request to the tail of the list. sstf_iosched.c uses LOOK or CLOOK which is an enhanced elevator algo. We need to maintain the request list as sorted. so sstf_add_request adds the new request to the correct location in the list.
+2. noop_iosched.c uses FCFS so we don’t need the last spindle location and moving direction in noop_data (we do need these things in sstf). We used to just pick up the head of the queue and process it. sstf_iosched.c uses LOOK or CLOOK which is an enhance elevator algo. We  need to maintain these two values in sstf_data to know how to choose the request(aka, moving spindles in which direction and locating the spindles). So this struct is like a state for the spindle.
+3. noop_iosched.c uses FCFS so we just move the spindle in the request queue’s order in noop_dispatch. sstf_iosched.c uses LOOK or CLOOK which is an enhance elevator algo. The spindle’s moving direction and last location will tell us how to move the spindle.
+  - If we are moving towards higher sectors, in the request list find the first request that has the greater sector number than the last spindle location. If there is none, change spindle direction and move the cursor to the PREVIOUS struct of where the cursor pointed in the request list. If there is one, move the spindle location by change the corresponding value in sstf_data structs
+  - If we are moving towards lower sectors, in the request list find the first request that has the smaller sector number than the last spindle location. If there is none, change spindle direction and move the cursor to the NEXT struct of where the cursor pointed in the request list. If there is one, move the spindle location by change the corresponding value in sstf_data structs
+  - Two kernel calls to understand so that you can know how to change them:
+    - list_del_init
+    - elv_dispatch_*
+4. Minor changes in sstf_init_queue. These changes correspond to the changes in sstf_data.
+
+
+Other changes in the Kernel for Compilation:
+
+add something in Makefile
+
+add something in Kconfig.iosched
