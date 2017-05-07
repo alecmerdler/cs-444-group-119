@@ -2,6 +2,19 @@
 
 ## Concurrency #2
 
+Dining Philosophers problem implemented in Python 2.7.
+
+### Implementation Details
+
+- Avoids deadlock by blocking until left fork is acquired
+- After left fork acquired, attempt non-blocking to acquire right fork. If not available, immediately drop left fork and go back to thinking
+
+### Instructions
+
+1. Run the simulation: `python2 philosophers.py`
+3. Exit using `Ctrl+C`
+2. Run the tests: `python2 test_dining_philosophers.py`
+4. Exit using `Ctrl+C`
 
 ## SSTF Scheduler
 
