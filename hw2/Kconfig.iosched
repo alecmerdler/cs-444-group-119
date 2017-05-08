@@ -3,7 +3,6 @@ if BLOCK
 menu "IO Schedulers"
 
 config IOSCHED_SSTF
-	bool
 	tristate "SSTF I/O scheduler"
 	default y
 	---help---
