@@ -83,44 +83,41 @@
 \tableofcontents
 \clearpage
 
-\section{Concurrency 2}
-In this assignment, we attempted to implement a solution to the producer-consumer problem. The problem states that producers cannot
-add to a shared buffer if the buffer is full, and consumers cannot take from the buffer if it is empty. Producer or consumer threads
-must also have exclusive access to the buffer.
-
-
 \section{Project 2}
 
 \subsection{Design}
+% Insertion sort
+
 
 
 \subsection{Answers}
 
 % What do you think the main point of this assignment is?
+
+We think the main point of this assignment was to learn about I/O scheduling algorithms and to become familiar with implementing
+changes to the linux kernel. In this exercise, we had to look into various files in the kernel to understand how to implement
+the LOOK scheduler with the data structures provided in the kernel. Overall this assignment helped us in our understanding of
+how the operating system schedules I/O requests.
+
+
+% % How did you personally approach the problem? Design decisions, algorithm, etc.
 %
-We think the main point of this assignment was to [[become familiar with multi-threaded programming]]. In this exercise[[, we
-created multiple threads and managed how they interact with a shared resource]]. Managing how producers/consumers interact
-with the buffer helped us practice using mutexes. Overall this assignment [[reminds us that managing shared resources is an
-important part of concurrency programming.]]
-
-% How did you personally approach the problem? Design decisions, algorithm, etc.
+% % HW 1 TEXT FOR REFERENCE
+% We decided to utilize a mutex for the exercise to manage exclusive access to the buffer. A thread first locks the buffer, changes it,
+% and then unlocks it. While the mutex is locked, other threads are blocked until it is unlocked. Threads are also blocked from the buffer
+% while the buffer is full (for producers) or empty (for consumers). To implement the random number generator, we used a separate file that
+% generated numbers using rdrand or the Mersenne Twister, depending on support.
 %
-
-We decided to utilize a mutex for the exercise to manage exclusive access to the buffer. A thread first locks the buffer, changes it,
-and then unlocks it. While the mutex is locked, other threads are blocked until it is unlocked. Threads are also blocked from the buffer
-while the buffer is full (for producers) or empty (for consumers). To implement the random number generator, we used a separate file that
-generated numbers using rdrand or the Mersenne Twister, depending on support.
-
-% How did you ensure your solution was correct? Testing details, for instance.
-
-
-To test our implementation, we ran it with a smaller buffer to check if the blocks were occurring when the buffer was full or empty.
-We also tested random number generation and thread handling by running it with a large amount of threads.
-
-% What did you learn?
-
-Overall, we learned how to use pthreads in c, and how we should consider synchronization problems when it comes to multithreaded programming.
-We also learned how to correctly use version control systems, and the synchronization problems involved with those.
+% % How did you ensure your solution was correct? Testing details, for instance.
+%
+% % HW 1 TEXT FOR REFERENCE
+% To test our implementation, we ran it with a smaller buffer to check if the blocks were occurring when the buffer was full or empty.
+% We also tested random number generation and thread handling by running it with a large amount of threads.
+%
+% % What did you learn?
+%
+% Overall, we learned how to use pthreads in c, and how we should consider synchronization problems when it comes to multithreaded programming.
+% We also learned how to correctly use version control systems, and the synchronization problems involved with those.
 
 \subsection{Work Log}
 
