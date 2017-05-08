@@ -1,0 +1,162 @@
+\documentclass[journal, letterpaper, draftclsnofoot, onecolumn, 10pt]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\usepackage{alltt}
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+\usepackage{listings}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+\usepackage{placeins}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{textheight=8.5in, textwidth=6in}
+
+\lstset{
+  language=C,                % choose the language of the code
+  numbers=left,                   % where to put the line-numbers
+  stepnumber=1,                   % the step between two line-numbers.
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  tabsize=8,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                 % show the filename of files included with \lstinputlisting;
+}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\newcommand{\toc}{\tableofcontents}
+
+
+\def\name{Leon Leighton, Alec Merdler, Arthur Shing}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+   colorlinks = true,
+   urlcolor = black,
+   linkcolor = black,
+   pdfauthor = {\name},
+   pdfkeywords = {cs444 ``operating systems'' files filesystem I/O},
+   pdftitle = {CS 444 Project 2: I/O Elevators},
+   pdfsubject = {CS 444 Project 2},
+   pdfpagemode = UseNone
+}
+
+\parindent = 0.0 in
+\parskip = 0.1 in
+
+
+\begin{document}
+\title{Project 1: Getting Acquainted}
+\author{Leon Leighton, Alec Merdler, and Arthur Shing}
+
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \centering
+    \maketitle
+    \begin{abstract}
+      This document provides an overview of the work done by Group 11-09 for Project 2: I/O Elevators.
+      It includes the design we used to implement the SSTF algorithm.
+      Also included is the write up for our work on the Concurrency 2 programming assignment.
+      This includes answers to questions asked in the assignment description, a work log, and the git version control log.
+    \end{abstract}
+
+
+\end{titlepage}
+\pagenumbering{arabic}
+\tableofcontents
+\clearpage
+
+\section{Project 2}
+
+\subsection{Design}
+% Insertion sort
+
+
+
+\subsection{Answers}
+
+% What do you think the main point of this assignment is?
+
+We think the main point of this assignment was to learn about I/O scheduling algorithms and to become familiar with implementing
+changes to the linux kernel. In this exercise, we had to look into various files in the kernel to understand how to implement
+the LOOK scheduler with the data structures provided in the kernel. Overall this assignment helped us in our understanding of
+how the operating system schedules I/O requests.
+
+
+% % How did you personally approach the problem? Design decisions, algorithm, etc.
+%
+% % HW 1 TEXT FOR REFERENCE
+% We decided to utilize a mutex for the exercise to manage exclusive access to the buffer. A thread first locks the buffer, changes it,
+% and then unlocks it. While the mutex is locked, other threads are blocked until it is unlocked. Threads are also blocked from the buffer
+% while the buffer is full (for producers) or empty (for consumers). To implement the random number generator, we used a separate file that
+% generated numbers using rdrand or the Mersenne Twister, depending on support.
+%
+% % How did you ensure your solution was correct? Testing details, for instance.
+%
+% % HW 1 TEXT FOR REFERENCE
+% To test our implementation, we ran it with a smaller buffer to check if the blocks were occurring when the buffer was full or empty.
+% We also tested random number generation and thread handling by running it with a large amount of threads.
+%
+% % What did you learn?
+%
+% Overall, we learned how to use pthreads in c, and how we should consider synchronization problems when it comes to multithreaded programming.
+% We also learned how to correctly use version control systems, and the synchronization problems involved with those.
+
+\subsection{Work Log}
+
+
+\clearpage
+\subsection{Version Control Log}
+
+
+
+\FloatBarrier
+\begin{table}[h!]
+\centering
+\caption{Git Log}
+% \label{git-log}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline \textbf{Version} & \textbf{Author} & \textbf{Date} & \textbf{commit message} & \textbf{MF} & \textbf{AL} & \textbf{DL}  \\
+    \hline 1 & alecmerdler & 2017-04-11 & initial commit & 2 & 0 & 0 \\
+    \hline 2 & alecmerdler & 2017-04-13 & added .gitignore & 1 & 1 & 0 \\
+    \hline 3 & alecmerdler & 2017-04-14 & starting concurrency \#1 & 2 & 49 & 1 \\
+    \hline 4 & Lee Leighton & 2017-04-18 & Add our\_rand code. Uses rdrand or mt19937 to return random number & 5 & 309 & 0 \\
+    \hline 5 & Lee Leighton & 2017-04-20 & Docs folder with latex files. Initial write for the qemu portion. & 3 & 262 & 0 \\
+    \hline 6 & Lee Leighton & 2017-04-20 & Merge pull request \#1 from leel8on/leel8on/random & 0 & 0 & 0 \\
+    \hline 7 & Lee Leighton & 2017-04-21 & Changing where buffer is created. Add mutex locking and creation of item & 2 & 46 & 6 \\
+    \hline 8 & Lee Leighton & 2017-04-21 & Fix how consumer access the item & 1 & 3 & 4 \\
+    \hline 9 & Lee Leighton & 2017-04-21 & Add multiple threads for both consumer and producer specified as arguments & 1 & 28 & 16 \\
+    \hline 10 & Lee Leighton & 2017-04-21 & Fix for loop index intialization & 1 & 3 & 3 \\
+    \hline 11 & Lee Leighton & 2017-04-21 & Use same number of threads for both consumers and producers & 1 & 6 & 7 \\
+    \hline 12 & Lee Leighton & 2017-04-21 & Keep track of threads ids in one array & 1 & 9 & 8 \\
+    \hline 13 & Arthur Shing & 2017-04-21 & Moved seed generation to hw1.c & 2 & 6 & 3 \\
+    \hline
+\end{tabular}
+\begin{tabular}{lp{12cm}}
+  \label{tabular:legend:git-log}
+  \textbf{acronym} & \textbf{meaning} \\
+  V & \texttt{version} \\
+  MF & Number of \texttt{modified files}. \\
+  AL & Number of \texttt{added lines}. \\
+  DL & Number of \texttt{deleted lines}. \\
+\end{tabular}
+\end{table}
+\FloatBarrier
+\end{document}
