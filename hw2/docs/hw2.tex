@@ -1,0 +1,198 @@
+\documentclass[journal, letterpaper, draftclsnofoot, onecolumn, 10pt]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\usepackage{alltt}
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+\usepackage{listings}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+\usepackage{placeins}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{textheight=8.5in, textwidth=6in}
+
+\lstset{
+  language=C,                % choose the language of the code
+  numbers=left,                   % where to put the line-numbers
+  stepnumber=1,                   % the step between two line-numbers.
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  tabsize=8,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                 % show the filename of files included with \lstinputlisting;
+}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\newcommand{\toc}{\tableofcontents}
+
+
+\def\name{Leon Leighton, Alec Merdler, Arthur Shing}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+   colorlinks = true,
+   urlcolor = black,
+   linkcolor = black,
+   pdfauthor = {\name},
+   pdfkeywords = {cs444 ``operating systems'' files filesystem I/O},
+   pdftitle = {CS 444 Project 1: Getting Acquainted},
+   pdfsubject = {CS 444 Project 1},
+   pdfpagemode = UseNone
+}
+
+\parindent = 0.0 in
+\parskip = 0.1 in
+
+
+\begin{document}
+\title{Project 1: Getting Acquainted}
+\author{Leon Leighton, Alec Merdler, and Arthur Shing}
+
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \centering
+    \maketitle
+    \begin{abstract}
+      This document provides an overview of the work done by Group 11-09 for Project 1: Getting Acquainted.
+      It includes the list of commands used to build our own kernel and verify that we booted it using QEMU on os-class.
+      It also contains a description of the QEMU flags used to boot our kernel.
+      Also included is the write up for our work on the Concurrency 1 programming assignment.
+      This includes answers to questions asked in the assignment description, a work log, and the git version control log.
+    \end{abstract}
+
+
+\end{titlepage}
+\pagenumbering{arabic}
+\tableofcontents
+\clearpage
+
+
+\section{Project 1}
+\subsection{Log of Commands}
+After logging into os-class.
+\begin{enumerate}
+\item cd /scratch/spring2017/
+\item mkdir 11-09
+\item cd 11-09
+\item git clone git://git.yoctoproject.org/linux-yocto-3.14
+\item cd linux-yocto-3.14/
+\item git checkout -b v3.14.26 v3.14.26
+\item cd ..
+\item source /scratch/opt/environment-setup-i586-poky-linux
+\item qemu-system-i386 -gdb tcp::6609 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext3,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+\item (In different terminal) gdb
+\item (In different terminal) (gdb) target remote :6609
+\item (In different terminal) (gdb) c
+\item (In VM) uname -r
+\item (In VM - output) 3.14.26ltsi-yocto-standard
+\item cp /scratch/spring2017/files/config-3.14.26-yocto-qemu .config
+\item cd linux-yocto-3.14/
+\item (In menuconfig) Press / and type in LOCALVERSION, press enter
+\item (In menuconfig) Hit 1, press enter and then edit the value to be -11-09-hw1
+\item make menuconfig
+\item make -j4 all
+\item make bzImage
+\item cd ..
+\item qemu-system-i386 -gdb tcp::6609 -S -nographic -kernel linux-yocto-3.14/arch/x86/boot/bzImage -drive file=core-image-lsb-sdk-qemux86.ext3,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+\item (In different terminal) gdb
+\item (In different terminal) (gdb) target remote :6609
+\item (In different terminal) (gdb) c
+\item (In VM) uname -r
+\item (In VM - output) 3.14.26-11-09-hw1
+\end{enumerate}
+\subsection{QEMU Flags}
+\begin{itemize}
+  \item -gdb: Wait for gdb connection on a device. In our case a tcp connection on port 6609.
+  \item -S: Do not start CPU at startup. Forces typing 'c' in gdb
+  \item -nographic: Disables graphical output
+  \item -kernel: Kernel image to use
+  \item -drive file,if: Which disk image file to use as a drive connected to an interface. In our case this is a connected to the virtio interface.
+  \item -enable-kvm: Enable KVM virtualization support.
+  \item -net: Network interface. In our case, none means to not setup a network interface.
+  \item -usb: Enable USB driver
+  \item -localtime: Set the real time clock to local time
+  \item --no-reboot: Quite instead of rebooting.
+  \item --append: Kernel command line option.
+\end{itemize}
+\clearpage
+\section{Concurrency 1}
+In this assignment, we attempted to implement a solution to the producer-consumer problem. The problem states that producers cannot
+add to a shared buffer if the buffer is full, and consumers cannot take from the buffer if it is empty. Producer or consumer threads
+must also have exclusive access to the buffer.
+
+\subsection{Answers}
+We think the main point of this assignment was to become familiar with multi-threaded programming. In this exercise, we
+created multiple threads and managed how they interact with a shared resource. Managing how producers/consumers interact
+with the buffer helped us practice using mutexes. Overall this assignment reminds us that managing shared resources is an
+important part of concurrency programming.
+
+We decided to utilize a mutex for the exercise to manage exclusive access to the buffer. A thread first locks the buffer, changes it,
+and then unlocks it. While the mutex is locked, other threads are blocked until it is unlocked. Threads are also blocked from the buffer
+while the buffer is full (for producers) or empty (for consumers). To implement the random number generator, we used a separate file that
+generated numbers using rdrand or the Mersenne Twister, depending on support.
+
+To test our implementation, we ran it with a smaller buffer to check if the blocks were occurring when the buffer was full or empty.
+We also tested random number generation and thread handling by running it with a large amount of threads.
+
+Overall, we learned how to use pthreads in c, and how we should consider synchronization problems when it comes to multithreaded programming.
+We also learned how to correctly use version control systems, and the synchronization problems involved with those.
+
+\subsection{Work Log}
+All three members contributed to this homework assignment.
+Members worked both remotely and met to work on the assignment in person.
+Collaboration, when not in person, was primarily done through email and GitHub.
+The majority of the programming was done Wednesday through Friday with most of the actual commits taking place on Friday.
+\clearpage
+\subsection{Version Control Log}
+The Git Log is slightly inaccurate due to both in person collaboration and a delay in granting of rights to the repository.
+\FloatBarrier
+\begin{table}[h!]
+\centering
+\caption{Git Log}
+% \label{git-log}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline \textbf{Version} & \textbf{Author} & \textbf{Date} & \textbf{commit message} & \textbf{MF} & \textbf{AL} & \textbf{DL}  \\
+    \hline 1 & alecmerdler & 2017-04-11 & initial commit & 2 & 0 & 0 \\
+    \hline 2 & alecmerdler & 2017-04-13 & added .gitignore & 1 & 1 & 0 \\
+    \hline 3 & alecmerdler & 2017-04-14 & starting concurrency \#1 & 2 & 49 & 1 \\
+    \hline 4 & Lee Leighton & 2017-04-18 & Add our\_rand code. Uses rdrand or mt19937 to return random number & 5 & 309 & 0 \\
+    \hline 5 & Lee Leighton & 2017-04-20 & Docs folder with latex files. Initial write for the qemu portion. & 3 & 262 & 0 \\
+    \hline 6 & Lee Leighton & 2017-04-20 & Merge pull request \#1 from leel8on/leel8on/random & 0 & 0 & 0 \\
+    \hline 7 & Lee Leighton & 2017-04-21 & Changing where buffer is created. Add mutex locking and creation of item & 2 & 46 & 6 \\
+    \hline 8 & Lee Leighton & 2017-04-21 & Fix how consumer access the item & 1 & 3 & 4 \\
+    \hline 9 & Lee Leighton & 2017-04-21 & Add multiple threads for both consumer and producer specified as arguments & 1 & 28 & 16 \\
+    \hline 10 & Lee Leighton & 2017-04-21 & Fix for loop index intialization & 1 & 3 & 3 \\
+    \hline 11 & Lee Leighton & 2017-04-21 & Use same number of threads for both consumers and producers & 1 & 6 & 7 \\
+    \hline 12 & Lee Leighton & 2017-04-21 & Keep track of threads ids in one array & 1 & 9 & 8 \\
+    \hline 13 & Arthur Shing & 2017-04-21 & Moved seed generation to hw1.c & 2 & 6 & 3 \\
+    \hline
+\end{tabular}
+\begin{tabular}{lp{12cm}}
+  \label{tabular:legend:git-log}
+  \textbf{acronym} & \textbf{meaning} \\
+  V & \texttt{version} \\
+  MF & Number of \texttt{modified files}. \\
+  AL & Number of \texttt{added lines}. \\
+  DL & Number of \texttt{deleted lines}. \\
+\end{tabular}
+\end{table}
+\FloatBarrier
+\end{document}
