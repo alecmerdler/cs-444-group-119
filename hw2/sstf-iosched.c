@@ -58,6 +58,7 @@ static void sstf_add_request(struct request_queue *q, struct request *rq)
 {
 	struct sstf_data *sd = q->elevator->elevator_data;
 	struct list_head *curr_pos;
+	struct list_head *tmp;
 	struct request *curr_node;
 
 	if (list_empty(&sd->queue)) {
@@ -67,7 +68,7 @@ static void sstf_add_request(struct request_queue *q, struct request *rq)
 		list_add(&rq->queuelist, &sd->queue);
 	} else {
 	    // Use macro to iterate over queue list
-		list_for_each(curr_pos, &sd->queue) {
+		list_for_each_safe(curr_pos, tmp, &sd->queue) {
 			curr_node = list_entry(curr_pos, struct request, queuelist);
 
             // Check if the new request has a higher position
