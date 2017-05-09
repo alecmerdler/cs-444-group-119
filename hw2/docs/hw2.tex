@@ -100,14 +100,17 @@ the LOOK scheduler with the data structures provided in the kernel. Overall this
 how the operating system schedules I/O requests.
 
 
-% % How did you personally approach the problem? Design decisions, algorithm, etc.
-%
-% % HW 1 TEXT FOR REFERENCE
-% We decided to utilize a mutex for the exercise to manage exclusive access to the buffer. A thread first locks the buffer, changes it,
-% and then unlocks it. While the mutex is locked, other threads are blocked until it is unlocked. Threads are also blocked from the buffer
-% while the buffer is full (for producers) or empty (for consumers). To implement the random number generator, we used a separate file that
-% generated numbers using rdrand or the Mersenne Twister, depending on support.
-%
+% How did you personally approach the problem? Design decisions, algorithm, etc.
+
+We decided to implement a C-LOOK I/O scheduler. To begin, we thought the simplest way would be to use the existing noop-iosched.c file
+as our format and implement an insertion sort into the function where a request is added to the queue.  
+
+% HW 1 TEXT FOR REFERENCE
+We decided to utilize a mutex for the exercise to manage exclusive access to the buffer. A thread first locks the buffer, changes it,
+and then unlocks it. While the mutex is locked, other threads are blocked until it is unlocked. Threads are also blocked from the buffer
+while the buffer is full (for producers) or empty (for consumers). To implement the random number generator, we used a separate file that
+generated numbers using rdrand or the Mersenne Twister, depending on support.
+
 % % How did you ensure your solution was correct? Testing details, for instance.
 %
 % % HW 1 TEXT FOR REFERENCE
