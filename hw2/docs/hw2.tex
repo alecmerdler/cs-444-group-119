@@ -118,7 +118,7 @@ However, we have not implemented the dispatch function correctly. As a result, o
 at the head of the queue like noop.
 
 
-% TESTING DETAILS - NEEDS WORK 
+% TESTING DETAILS - NEEDS WORK
 To test our implementation, we
 
 
@@ -137,36 +137,39 @@ We created our implementation for the I/O scheduler on 5/7-8.
 
 
 \FloatBarrier
-\begin{table}[h!]
-\centering
-\caption{Git Log}
-% \label{git-log}
-\begin{tabular}{|c|c|c|c|}
-    \hline \textbf{Version} & \textbf{Author} & \textbf{Date} & \textbf{commit message}  \\
-    \hline 1 & alecmerdler & 2017-04-30 & starting concurrency 2 \\
-    \hline 1 & alecmerdler & 2017-05-06 & starting scheduler \\
-    \hline 1 & alecmerdler & 2017-05-06 & cleanup \\
-    \hline 1 & alecmerdler & 2017-05-06 & closer to dining philosopher's solution \\
-    \hline 1 & alecmerdler & 2017-05-06 & improved docstrings\\
-    \hline 1 & alecmerdler & 2017-05-06 & current implementation does not prevent deadlock \\
-    \hline 1 & alecmerdler & 2017-05-06 & actually deadlock is prevented because of blocking call to get left fork \\
-    \hline 1 & alecmerdler & 2017-05-07 & working on I/O scheduler \\
-    \hline 1 & alecmerdler & 2017-05-07 & improving readme \\
-    \hline 1 & alecmerdler & 2017-05-07 & adding documentation comments \\
-    \hline 1 & alecmerdler & 2017-05-07 & more comments \\
-    \hline 1 & alecmerdler & 2017-05-07 & added TA instructions/tips \\
-    \hline 1 & alecmerdler & 2017-05-07 & improvements to readme\\
-    \hline 1 & alecmerdler & 2017-05-07 & added Kconfig.iosched and Makefile based on instructions \\
-    \hline 1 & Arthur Shing & 2017-05-08 & Cleaned up hw2 doc for editing\\
-    \hline 1 & alecmerdler & 2017-05-08 & update readme\\
-    \hline 1 & alecmerdler & 2017-05-08 & merged with master\\
-    \hline 1 & alecmerdler & 2017-05-08 & better instructions\\
-    \hline 1 & Arthur Shing & 2017-05-08 & Added initial responses \\
-    \hline 1 & Arthur Shing & 2017-05-08 & Added comments on design problems \\
-    \hline 1 & Lee Leighton & 2017-05-08 & Added hw2 patch \\
-    \hline 1 & Lee Leighton & 2017-05-08 & Switch to using safe version of list\_for\_each \\
-    \hline
-\end{tabular}
-\end{table}
+% \begin{table}[h!]
+% \centering
+% \caption{Git Log}
+
+\scalebox{0.8}{
+\input{vclog.tex}}
+% % \label{git-log}
+% \begin{tabular}{|c|c|c|c|}
+%     \hline \textbf{Version} & \textbf{Author} & \textbf{Date} & \textbf{commit message}  \\
+%     \hline 1 & alecmerdler & 2017-04-30 & starting concurrency 2 \\
+%     \hline 1 & alecmerdler & 2017-05-06 & starting scheduler \\
+%     \hline 1 & alecmerdler & 2017-05-06 & cleanup \\
+%     \hline 1 & alecmerdler & 2017-05-06 & closer to dining philosopher's solution \\
+%     \hline 1 & alecmerdler & 2017-05-06 & improved docstrings\\
+%     \hline 1 & alecmerdler & 2017-05-06 & current implementation does not prevent deadlock \\
+%     \hline 1 & alecmerdler & 2017-05-06 & actually deadlock is prevented because of blocking call to get left fork \\
+%     \hline 1 & alecmerdler & 2017-05-07 & working on I/O scheduler \\
+%     \hline 1 & alecmerdler & 2017-05-07 & improving readme \\
+%     \hline 1 & alecmerdler & 2017-05-07 & adding documentation comments \\
+%     \hline 1 & alecmerdler & 2017-05-07 & more comments \\
+%     \hline 1 & alecmerdler & 2017-05-07 & added TA instructions/tips \\
+%     \hline 1 & alecmerdler & 2017-05-07 & improvements to readme\\
+%     \hline 1 & alecmerdler & 2017-05-07 & added Kconfig.iosched and Makefile based on instructions \\
+%     \hline 1 & Arthur Shing & 2017-05-08 & Cleaned up hw2 doc for editing\\
+%     \hline 1 & alecmerdler & 2017-05-08 & update readme\\
+%     \hline 1 & alecmerdler & 2017-05-08 & merged with master\\
+%     \hline 1 & alecmerdler & 2017-05-08 & better instructions\\
+%     \hline 1 & Arthur Shing & 2017-05-08 & Added initial responses \\
+%     \hline 1 & Arthur Shing & 2017-05-08 & Added comments on design problems \\
+%     \hline 1 & Lee Leighton & 2017-05-08 & Added hw2 patch \\
+%     \hline 1 & Lee Leighton & 2017-05-08 & Switch to using safe version of list\_for\_each \\
+%     \hline
+% \end{tabular}
+% \end{table}
 \FloatBarrier
 \end{document}
