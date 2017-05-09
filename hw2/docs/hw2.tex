@@ -73,7 +73,6 @@
     \begin{abstract}
       This document provides an overview of the work done by Group 11-09 for Project 2: I/O Elevators.
       It includes the design we used to implement the SSTF algorithm.
-      Also included is the write up for our work on the Concurrency 2 programming assignment.
       This includes answers to questions asked in the assignment description, a work log, and the git version control log.
     \end{abstract}
 
@@ -87,6 +86,12 @@
 
 \subsection{Design}
 % Insertion sort
+
+We decided to implement a C-LOOK I/O scheduler. To begin, we thought the simplest way would be to use the existing noop-iosched.c file
+as our format and implement an insertion sort into the function where a request is added to the queue. This way, the queue would be
+sorted and ready for dispatching. In addition, because the No-op is a FIFO implementation and does not account for read/write head
+location, a shortest-seek-first implementation would require a way to include the last location and direction of the read/write head.
+ \\
 
 
 
@@ -102,11 +107,6 @@ how the operating system schedules I/O requests. \\
 
 % How did you personally approach the problem? Design decisions, algorithm, etc.
 
-We decided to implement a C-LOOK I/O scheduler. To begin, we thought the simplest way would be to use the existing noop-iosched.c file
-as our format and implement an insertion sort into the function where a request is added to the queue. This way, the queue would be
-sorted and ready for dispatching. In addition, because the No-op is a FIFO implementation and does not account for read/write head
-location, a shortest-seek-first implementation would require a way to include the last location and direction of the read/write head.
- \\
 
 Our implementation thus far adds a sorting algorithm such that the requests are added in a sorted order. We decided not to implement
 the sorting with respect to the location of the read/write head, meaning that the request queue is simply sorted in ascending order.
@@ -121,7 +121,7 @@ at the head of the queue like noop.
 % TESTING DETAILS
 To test our implementation, we generated I/O on the VM through a python script that reads files from the directories starting at the
 root directory ('/'). We then observed that the request were dispatched in queue in order of their sector numbers. We also used `dd'
-create files on the disk and observed the same behavior. 
+create files on the disk and observed the same behavior.
 
 
 
