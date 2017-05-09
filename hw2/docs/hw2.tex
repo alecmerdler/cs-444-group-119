@@ -117,20 +117,16 @@ the read/write head. We decided to implement the latter because it overall seeme
 However, we have not implemented the dispatch function correctly. As a result, our current algorithm simply dispatches the request
 at the head of the queue like noop.
 
-% % How did you ensure your solution was correct? Testing details, for instance.
-%
-% % HW 1 TEXT FOR REFERENCE
-% To test our implementation, we ran it with a smaller buffer to check if the blocks were occurring when the buffer was full or empty.
-% We also tested random number generation and thread handling by running it with a large amount of threads.
-%
-% % What did you learn?
-%
+
+% TESTING DETAILS - NEEDS WORK 
+To test our implementation, we
+
 
 Overall, we learned about I/O scheduling algorithms and running scripts on the VM. We learned a lot about data structures
-(specifically list_head) in the kernel, as well as implementation of those data structures.\\
+(specifically list\_head) in the kernel, as well as implementation of those data structures.\\
 
 \subsection{Work Log}
-We began work on 5/2. We revised our concurrency assignment #2 and began work on 5/4. We began by looking
+We began work on 5/2. We revised our concurrency assignment 2 and began work on 5/4. We began by looking
 at the existing code and determining what it was that we needed to change. Because of time conflicts, the three of us were often unable
 to meet as a whole group, although we met in pairs. We cleaned up our implementation for the concurrency assignment on 5/6.
 We created our implementation for the I/O scheduler on 5/7-8.
@@ -145,30 +141,31 @@ We created our implementation for the I/O scheduler on 5/7-8.
 \centering
 \caption{Git Log}
 % \label{git-log}
-\begin{tabular}{|c|c|c|c|c|c|c|}
-    \hline \textbf{Version} & \textbf{Author} & \textbf{Date} & \textbf{commit message} & \textbf{MF} & \textbf{AL} & \textbf{DL}  \\
-    \hline 1 & alecmerdler & 2017-04-11 & initial commit & 2 & 0 & 0 \\
-    \hline 2 & alecmerdler & 2017-04-13 & added .gitignore & 1 & 1 & 0 \\
-    \hline 3 & alecmerdler & 2017-04-14 & starting concurrency \#1 & 2 & 49 & 1 \\
-    \hline 4 & Lee Leighton & 2017-04-18 & Add our\_rand code. Uses rdrand or mt19937 to return random number & 5 & 309 & 0 \\
-    \hline 5 & Lee Leighton & 2017-04-20 & Docs folder with latex files. Initial write for the qemu portion. & 3 & 262 & 0 \\
-    \hline 6 & Lee Leighton & 2017-04-20 & Merge pull request \#1 from leel8on/leel8on/random & 0 & 0 & 0 \\
-    \hline 7 & Lee Leighton & 2017-04-21 & Changing where buffer is created. Add mutex locking and creation of item & 2 & 46 & 6 \\
-    \hline 8 & Lee Leighton & 2017-04-21 & Fix how consumer access the item & 1 & 3 & 4 \\
-    \hline 9 & Lee Leighton & 2017-04-21 & Add multiple threads for both consumer and producer specified as arguments & 1 & 28 & 16 \\
-    \hline 10 & Lee Leighton & 2017-04-21 & Fix for loop index intialization & 1 & 3 & 3 \\
-    \hline 11 & Lee Leighton & 2017-04-21 & Use same number of threads for both consumers and producers & 1 & 6 & 7 \\
-    \hline 12 & Lee Leighton & 2017-04-21 & Keep track of threads ids in one array & 1 & 9 & 8 \\
-    \hline 13 & Arthur Shing & 2017-04-21 & Moved seed generation to hw1.c & 2 & 6 & 3 \\
+\begin{tabular}{|c|c|c|c|}
+    \hline \textbf{Version} & \textbf{Author} & \textbf{Date} & \textbf{commit message}  \\
+    \hline 1 & alecmerdler & 2017-04-30 & starting concurrency 2 \\
+    \hline 1 & alecmerdler & 2017-05-06 & starting scheduler \\
+    \hline 1 & alecmerdler & 2017-05-06 & cleanup \\
+    \hline 1 & alecmerdler & 2017-05-06 & closer to dining philosopher's solution \\
+    \hline 1 & alecmerdler & 2017-05-06 & improved docstrings\\
+    \hline 1 & alecmerdler & 2017-05-06 & current implementation does not prevent deadlock \\
+    \hline 1 & alecmerdler & 2017-05-06 & actually deadlock is prevented because of blocking call to get left fork \\
+    \hline 1 & alecmerdler & 2017-05-07 & working on I/O scheduler \\
+    \hline 1 & alecmerdler & 2017-05-07 & improving readme \\
+    \hline 1 & alecmerdler & 2017-05-07 & adding documentation comments \\
+    \hline 1 & alecmerdler & 2017-05-07 & more comments \\
+    \hline 1 & alecmerdler & 2017-05-07 & added TA instructions/tips \\
+    \hline 1 & alecmerdler & 2017-05-07 & improvements to readme\\
+    \hline 1 & alecmerdler & 2017-05-07 & added Kconfig.iosched and Makefile based on instructions \\
+    \hline 1 & Arthur Shing & 2017-05-08 & Cleaned up hw2 doc for editing\\
+    \hline 1 & alecmerdler & 2017-05-08 & update readme\\
+    \hline 1 & alecmerdler & 2017-05-08 & merged with master\\
+    \hline 1 & alecmerdler & 2017-05-08 & better instructions\\
+    \hline 1 & Arthur Shing & 2017-05-08 & Added initial responses \\
+    \hline 1 & Arthur Shing & 2017-05-08 & Added comments on design problems \\
+    \hline 1 & Lee Leighton & 2017-05-08 & Added hw2 patch \\
+    \hline 1 & Lee Leighton & 2017-05-08 & Switch to using safe version of list\_for\_each \\
     \hline
-\end{tabular}
-\begin{tabular}{lp{12cm}}
-  \label{tabular:legend:git-log}
-  \textbf{acronym} & \textbf{meaning} \\
-  V & \texttt{version} \\
-  MF & Number of \texttt{modified files}. \\
-  AL & Number of \texttt{added lines}. \\
-  DL & Number of \texttt{deleted lines}. \\
 \end{tabular}
 \end{table}
 \FloatBarrier
