@@ -97,20 +97,25 @@
 We think the main point of this assignment was to learn about I/O scheduling algorithms and to become familiar with implementing
 changes to the linux kernel. In this exercise, we had to look into various files in the kernel to understand how to implement
 the LOOK scheduler with the data structures provided in the kernel. Overall this assignment helped us in our understanding of
-how the operating system schedules I/O requests.
+how the operating system schedules I/O requests. \\
 
 
 % How did you personally approach the problem? Design decisions, algorithm, etc.
 
 We decided to implement a C-LOOK I/O scheduler. To begin, we thought the simplest way would be to use the existing noop-iosched.c file
 as our format and implement an insertion sort into the function where a request is added to the queue. This way, the queue would be
-sorted and ready for dispatching. 
+sorted and ready for dispatching. In addition, because the No-op is a FIFO implementation and does not account for read/write head
+location, a shortest-seek-first implementation would require a way to include the last location and direction of the read/write head.
+ \\
 
-% % HW 1 TEXT FOR REFERENCE
-% We decided to utilize a mutex for the exercise to manage exclusive access to the buffer. A thread first locks the buffer, changes it,
-% and then unlocks it. While the mutex is locked, other threads are blocked until it is unlocked. Threads are also blocked from the buffer
-% while the buffer is full (for producers) or empty (for consumers). To implement the random number generator, we used a separate file that
-% generated numbers using rdrand or the Mersenne Twister, depending on support.
+Our implementation thus far adds a sorting algorithm such that the requests are added in a sorted order. We decided not to implement
+the sorting with respect to the location of the read/write head, meaning that the request queue is simply sorted in ascending order.
+We saw that we had two choices: to sort the request queue in accordance with the read/write head location and dispatch the head of
+the queue, or to sort it in ascending order and finding the correct request to dispatch according to the location and direction of
+the read/write head. We decided to implement the latter because it overall seemed easier to sort and dispatch. \\
+
+However, we have not implemented the dispatch function correctly. As a result, our current algorithm simply dispatches the request
+at the head of the queue like noop.
 
 % % How did you ensure your solution was correct? Testing details, for instance.
 %
@@ -120,6 +125,9 @@ sorted and ready for dispatching.
 %
 % % What did you learn?
 %
+
+Overall, we learned how to 
+
 % Overall, we learned how to use pthreads in c, and how we should consider synchronization problems when it comes to multithreaded programming.
 % We also learned how to correctly use version control systems, and the synchronization problems involved with those.
 
