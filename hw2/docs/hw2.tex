@@ -118,8 +118,11 @@ However, we have not implemented the dispatch function correctly. As a result, o
 at the head of the queue like noop.
 
 
-% TESTING DETAILS - NEEDS WORK
-To test our implementation, we
+% TESTING DETAILS
+To test our implementation, we generated I/O on the VM through a python script that reads files from the directories starting at the
+root directory ('/'). We then observed that the request were dispatched in queue in order of their sector numbers. We also used `dd'
+create files on the disk and observed the same behavior. 
+
 
 
 Overall, we learned about I/O scheduling algorithms and running scripts on the VM. We learned a lot about data structures
