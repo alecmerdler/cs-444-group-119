@@ -10,15 +10,20 @@ class Node:
         self.prev = None
 
 class linkedlist:
-    def __init__(self):
+    def __init__(self, numSearchers):
         self.head = None
+        self.insertSem = threading.Semaphore()
+        self.searchSem = threading.Semaphore(numSearchers)
+
+
 
 # Locked with deleters, but not searchers or inserters
 class searcher(threading.Thread):
-    def __init__(self, list):
+    def __init__(self, list, index):
         threading.Thread.__init__(self)
         self.list = list
-        self.lock = threading.Lock()
+        self.lock = list.searchSem()
+
 
     def run(self):
         # sleep and generate random searches?
@@ -34,7 +39,7 @@ class inserter(threading.Thread):
     def __init__(self, list, lock):
         threading.Thread.__init__(self)
         self.list = list
-        self.lock = lock
+        self.lock = list.insertSem
 
     def run(self):
         # sleep and generate random inserts?
