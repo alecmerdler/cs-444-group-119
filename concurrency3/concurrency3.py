@@ -43,6 +43,7 @@ def insert(list, value):
     """ Adds a node with the given value to the end of the list.
         Blocks both insertion and deletion.
     """
+    print "testing"
     head = list.head
 
     # Acquire mutex
@@ -53,6 +54,7 @@ def insert(list, value):
 
     node = Node(value)
     head.next = node
+    print "Inserted new node with data " + value + "!"
 
 
 def delete(list, position):
@@ -86,9 +88,11 @@ if __name__ == "__main__":
     list = LinkedList()
 
     for i in range(0, 10):
+        # Start a new inserter, searcher, and deleter in their own threads
         inserter = threading.Thread(target=insert, args=(list, i))
-        searcher = threading.Thread(target=search, args=(list, i))
-        deleter = threading.Thread(target=delete, args=(list))
+        inserter.start()
+        # threading.Thread(target=search, args=(list, i))
+        # threading.Thread(target=delete, args=(list))
 
     # For Ctrl+C
     try:
