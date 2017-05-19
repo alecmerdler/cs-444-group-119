@@ -3,88 +3,93 @@ import random
 import os
 from time import sleep
 
+
 class Node:
     def __init__(self, data):
         self.data = data
         self.next = None
-        self.prev = None
 
-class linkedlist:
-    def __init__(self, numSearchers):
+
+class LinkedList:
+    """ A data structure that maintains two semaphores: one for locking searchers, and
+        one for locking inserters.
+    """
+    def __init__(self, num_searchers):
         self.head = None
-        self.insertSem = threading.Semaphore()
-        self.searchSem = threading.Semaphore(numSearchers)
+        self.no_inserter = threading.BoundedSemaphore(value=1)
+        self.no_searcher = threading.BoundedSemaphore(value=1)
 
 
+def search(list, needle):
+    """ Traverses the given list to find the given needle value.
+        Blocks deletion.
+    """
+    head = list.head
 
-# Locked with deleters, but not searchers or inserters
-class searcher(threading.Thread):
-    def __init__(self, list, index):
-        threading.Thread.__init__(self)
-        self.list = list
-        self.lock = list.searchSem()
+    # Acquire mutex
+    sema = list.no_searcher.acquire()
 
-
-    def run(self):
-        # sleep and generate random searches?
-        self.search()
-
-    def search(self, index):
-        # Acquire own Lock (which deleter might have)
-        # Search
-
-
-# Locked with deleters and inserters
-class inserter(threading.Thread):
-    def __init__(self, list, lock):
-        threading.Thread.__init__(self)
-        self.list = list
-        self.lock = list.insertSem
-
-    def run(self):
-        # sleep and generate random inserts?
-        self.insert()
-
-    def insert(self, data):
-        # Acquire insert lock (which deleter or another inserter might have)
-
-        newNode = Node(data)
-        if self.list.head == None:
-            self.head = newNode
+    while head.next is not None:
+        if head.data == needle:
+            print "Found needle " + needle + "!"
+            return
         else:
-            newNode.next = self.head
-            newNode.next.prev = newNode # set head prev to new node
-            self.head = newNode
+            head = head.next
+
+    print "Could not find needle " + needle + "!"
 
 
-# Locked with everyone
-class deleter(threading.Thread):
-    def __init__(self, index, list):
-        threading.Thread.__init__(self)
+def insert(list, value):
+    """ Adds a node with the given value to the end of the list.
+        Blocks both insertion and deletion.
+    """
+    head = list.head
 
-    def run(self):
-        #  sleep and generate random deletes?
-        self.delete()
+    # Acquire mutex
+    list.no_inserter.acquire()
 
-    def delete(self, index):
-        # Acquire all searchers locks
-        # Acquire the insert lock
-        # Delete stuff at index
+    while head.next is not None:
+        head = head.next
+
+    node = Node(value)
+    head.next = node
 
 
+def delete(list, position):
+    """ Delete a node from the list at the given position. Assume the position
+        is less than the length of the list.
+        Blocks both insertion and search.
+    """
+    head = list.head
+    last = list.head
+    current_position = 0
 
+    # Acquire mutexes
+    list.no_searcher.acquire()
+    list.no_inserter.acquire()
+
+    while head.next is not None:
+        if current_position == position:
+            last.next = head.next
+            head = None
+            print "Deleted node at position " + position + "!"
+            break
+        else:
+            last = head
+            head = head.next
+
+    list.no_searcher.release()
+    list.no_inserter.release()
 
 
 if __name__ == "__main__":
+    num_searchers = 3
+    list = LinkedList(num_searchers)
 
-    # Make the insert lock
-    # Initialize linked list
-    # Uh.. make threads
+    for i in range(0, 10):
+        searcher = threading.Thread(target=search, args=(list))
 
-
-
-
-    # for Ctrl+C
+    # For Ctrl+C
     try:
         while True:
             sleep(0.1)
