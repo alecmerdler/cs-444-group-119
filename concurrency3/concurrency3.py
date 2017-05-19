@@ -5,6 +5,8 @@ from time import sleep
 
 
 class Node:
+    """ Represents a node in the singly-linked list.
+    """
     def __init__(self, data):
         self.data = data
         self.next = None
@@ -31,30 +33,35 @@ def search(list, needle):
 
     while head.next is not None:
         if head.data == needle:
-            print "Found needle " + needle + "!"
+            print "Found needle " + str(needle) + "!"
             return
         else:
             head = head.next
 
-    print "Could not find needle " + needle + "!"
+    print "Could not find needle " + str(needle) + "!"
 
 
 def insert(list, value):
     """ Adds a node with the given value to the end of the list.
         Blocks both insertion and deletion.
     """
-    print "testing"
     head = list.head
+    node = Node(value)
 
     # Acquire mutex
     list.block_insert_or_delete.acquire()
 
-    while head.next is not None:
-        head = head.next
+    if head is None:
+        head = node
+    else:
+        while head.next is not None:
+            head = head.next
 
-    node = Node(value)
-    head.next = node
-    print "Inserted new node with data " + value + "!"
+        head.next = node
+
+    print "Inserted new node with data " + str(value) + "!"
+
+    list.block_insert_or_delete.release()
 
 
 def delete(list, position):
@@ -74,7 +81,7 @@ def delete(list, position):
         if current_position == position:
             last.next = head.next
             head = None
-            print "Deleted node at position " + position + "!"
+            print "Deleted node at position " + str(position) + "!"
             break
         else:
             last = head
