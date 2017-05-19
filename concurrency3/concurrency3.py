@@ -14,10 +14,10 @@ class LinkedList:
     """ A data structure that maintains two semaphores: one for locking searchers, and
         one for locking inserters.
     """
-    def __init__(self, num_searchers):
+    def __init__(self):
         self.head = None
-        self.no_inserter = threading.BoundedSemaphore(value=1)
-        self.no_searcher = threading.BoundedSemaphore(value=1)
+        self.block_insert_or_delete = threading.BoundedSemaphore(value=1)
+        self.block_search_or_delete = threading.BoundedSemaphore(value=1)
 
 
 def search(list, needle):
@@ -27,7 +27,7 @@ def search(list, needle):
     head = list.head
 
     # Acquire mutex
-    sema = list.no_searcher.acquire()
+    list.block_search_or_delete.acquire()
 
     while head.next is not None:
         if head.data == needle:
@@ -46,7 +46,7 @@ def insert(list, value):
     head = list.head
 
     # Acquire mutex
-    list.no_inserter.acquire()
+    list.block_insert_or_delete.acquire()
 
     while head.next is not None:
         head = head.next
@@ -65,8 +65,8 @@ def delete(list, position):
     current_position = 0
 
     # Acquire mutexes
-    list.no_searcher.acquire()
-    list.no_inserter.acquire()
+    list.block_search_or_delete.acquire()
+    list.block_insert_or_delete.acquire()
 
     while head.next is not None:
         if current_position == position:
@@ -78,16 +78,17 @@ def delete(list, position):
             last = head
             head = head.next
 
-    list.no_searcher.release()
-    list.no_inserter.release()
+    list.block_search_or_delete.release()
+    list.block_insert_or_delete.release()
 
 
 if __name__ == "__main__":
-    num_searchers = 3
-    list = LinkedList(num_searchers)
+    list = LinkedList()
 
     for i in range(0, 10):
-        searcher = threading.Thread(target=search, args=(list))
+        inserter = threading.Thread(target=insert, args=(list, i))
+        searcher = threading.Thread(target=search, args=(list, i))
+        deleter = threading.Thread(target=delete, args=(list))
 
     # For Ctrl+C
     try:
