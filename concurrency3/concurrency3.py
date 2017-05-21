@@ -13,13 +13,18 @@ class Node:
 
 
 class LinkedList:
-    """ A data structure that maintains two semaphores: one for locking searchers, and
-        one for locking inserters.
+    """ A singly-linked list data structure.
     """
     def __init__(self):
         self.head = None
         self.block_insert_or_delete = BoundedSemaphore(value=1)
         self.block_search_or_delete = BoundedSemaphore(value=1)
+
+        self.insert_mutex = BoundedSemaphore(value=1)
+        self.no_searcher = BoundedSemaphore(value=1)
+        self.no_inserter = BoundedSemaphore(value=1)
+        self.search_switch = LightSwitch()
+        self.insert_switch = LightSwitch()
 
 
 class LightSwitch:
@@ -30,6 +35,8 @@ class LightSwitch:
         self.mutex = BoundedSemaphore(value=1)
 
     def lock(self, semaphore):
+        """ Given a semaphore, acquire it if internal count is 0. Otherwise, carry on.
+        """
         self.mutex.acquire()
         self.counter += 1
         if self.counter == 1:
@@ -38,11 +45,13 @@ class LightSwitch:
         self.mutex.release()
 
     def unlock(self, semaphore):
+        """ Given a semaphore, release it if internal count is 1. Otherwise, carry on.
+        """
         self.mutex.acquire()
         self.counter -= 1
         if self.counter == 0:
             semaphore.release()
-            
+
         self.mutex.release()
 
 
@@ -52,9 +61,9 @@ def search(list, value):
     """
     print "Searching for " + str(value)
 
-    # FIXME: Acquire mutex to block deleters without blocking other searchers
-    # list.block_search_or_delete.acquire()
+    list.search_switch.lock(list.no_searcher)
 
+    # Critical Section
     head = list.head
     while head is not None:
         if head.data == value:
@@ -67,8 +76,8 @@ def search(list, value):
     if head is None:
         print "Could not find value " + str(value)
 
-    # FIXME: Acquire mutex to block deleters without blocking other searchers
-    # list.block_search_or_delete.release()
+    list.search_switch.unlock(list.no_searcher)
+
 
 
 def insert(list, value):
@@ -77,9 +86,10 @@ def insert(list, value):
     """
     print "Inserting " + str(value)
 
-    # Acquire mutex
-    list.block_insert_or_delete.acquire()
+    list.insert_mutex.acquire()
+    list.insert_switch.lock(list.no_inserter)
 
+    # Critical Section
     node = Node(value)
 
     if list.head is None:
@@ -92,7 +102,8 @@ def insert(list, value):
 
     print "Inserted new node with data " + str(value)
 
-    list.block_insert_or_delete.release()
+    list.insert_mutex.release()
+    list.insert_switch.unlock(list.no_inserter)
 
 
 def delete(list, position):
@@ -102,10 +113,10 @@ def delete(list, position):
     """
     print "Deleter released!"
 
-    # Acquire mutexes
-    list.block_search_or_delete.acquire()
-    list.block_insert_or_delete.acquire()
+    list.no_searcher.acquire()
+    list.no_inserter.acquire()
 
+    # Critical Section
     head = list.head
     last = list.head
     current_position = 0
@@ -120,14 +131,15 @@ def delete(list, position):
             last = head
             head = head.next
 
-    list.block_search_or_delete.release()
-    list.block_insert_or_delete.release()
+    list.no_inserter.release()
+    list.no_searcher.release()
 
 
 if __name__ == "__main__":
     list = LinkedList()
+    num = 10
 
-    for i in range(0, 10):
+    for i in range(0, num):
         # Start a new inserter, searcher, and deleter in their own respective threads
         inserter = Thread(target=insert, args=(list, i))
         searcher = Thread(target=search, args=(list, i))
