@@ -22,42 +22,39 @@ class LinkedList:
         self.block_search_or_delete = threading.BoundedSemaphore(value=1)
 
 
-def search(list, needle):
-    """ Traverses the given list to find the given needle value.
+def search(list, val):
+    """ Traverses the given list to find the given val.
         Blocks deletion.
     """
-    head = list.head
-
     # Acquire mutex
     list.block_search_or_delete.acquire()
 
-    while head.next is not None:
-        if head.data == needle:
-            print "Found needle " + str(needle) + "!"
+    while list.head.next is not None:
+        if list.head.data == val:
+            print "Found val " + str(val) + "!"
             return
         else:
-            head = head.next
+            list.head = list.head.next
 
-    print "Could not find needle " + str(needle) + "!"
+    print "Could not find val " + str(val) + "!"
 
 
 def insert(list, value):
     """ Adds a node with the given value to the end of the list.
         Blocks both insertion and deletion.
     """
-    head = list.head
     node = Node(value)
 
     # Acquire mutex
     list.block_insert_or_delete.acquire()
 
-    if head is None:
-        head = node
+    if list.head is None:
+        list.head = node
     else:
-        while head.next is not None:
-            head = head.next
+        while list.head.next is not None:
+            list.head = list.head.next
 
-        head.next = node
+        list.head.next = node
 
     print "Inserted new node with data " + str(value) + "!"
 
@@ -98,7 +95,9 @@ if __name__ == "__main__":
         # Start a new inserter, searcher, and deleter in their own threads
         inserter = threading.Thread(target=insert, args=(list, i))
         inserter.start()
-        # threading.Thread(target=search, args=(list, i))
+        sleep(1)
+        searcher = threading.Thread(target=search, args=(list, i))
+        searcher.start()
         # threading.Thread(target=delete, args=(list))
 
     # For Ctrl+C
