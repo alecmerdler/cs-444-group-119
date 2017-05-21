@@ -22,27 +22,35 @@ class LinkedList:
         self.block_search_or_delete = threading.BoundedSemaphore(value=1)
 
 
-def search(list, val):
-    """ Traverses the given list to find the given val.
+def search(list, value):
+    """ Traverses the given list to find the given value.
         Blocks deletion.
     """
-    # Acquire mutex
-    list.block_search_or_delete.acquire()
+    print "Searching for " + str(value)
 
-    while list.head.next is not None:
-        if list.head.data == val:
-            print "Found val " + str(val) + "!"
+    # FIXME: Acquire mutex to block deleters without blocking other searchers
+    # list.block_search_or_delete.acquire()
+
+    head = list.head
+    while head is not None:
+        if head.data == value:
+            print "Found value " + str(value)
             return
         else:
-            list.head = list.head.next
+            head = head.next
 
-    print "Could not find val " + str(val) + "!"
+    print "Could not find value " + str(value)
+
+    # FIXME: Acquire mutex to block deleters without blocking other searchers
+    # list.block_search_or_delete.release()
 
 
 def insert(list, value):
     """ Adds a node with the given value to the end of the list.
         Blocks both insertion and deletion.
     """
+    print "Inserting " + str(value)
+
     node = Node(value)
 
     # Acquire mutex
@@ -56,7 +64,7 @@ def insert(list, value):
 
         list.head.next = node
 
-    print "Inserted new node with data " + str(value) + "!"
+    print "Inserted new node with data " + str(value)
 
     list.block_insert_or_delete.release()
 
@@ -66,6 +74,8 @@ def delete(list, position):
         is less than the length of the list.
         Blocks both insertion and search.
     """
+    print "Deleter released!"
+
     head = list.head
     last = list.head
     current_position = 0
@@ -78,7 +88,7 @@ def delete(list, position):
         if current_position == position:
             last.next = head.next
             head = None
-            print "Deleted node at position " + str(position) + "!"
+            print "Deleted node at position " + str(position)
             break
         else:
             last = head
@@ -92,13 +102,16 @@ if __name__ == "__main__":
     list = LinkedList()
 
     for i in range(0, 10):
-        # Start a new inserter, searcher, and deleter in their own threads
+        # Start a new inserter, searcher, and deleter in their own respective threads
         inserter = threading.Thread(target=insert, args=(list, i))
+        searcher = threading.Thread(target=search, args=(list, i))
+        deleter = threading.Thread(target=delete, args=(list))
+
         inserter.start()
         sleep(1)
-        searcher = threading.Thread(target=search, args=(list, i))
         searcher.start()
-        # threading.Thread(target=delete, args=(list))
+        # deleter.start()
+
 
     # For Ctrl+C
     try:
