@@ -22,6 +22,30 @@ class LinkedList:
         self.block_search_or_delete = BoundedSemaphore(value=1)
 
 
+class LightSwitch:
+    """ Light switch pattern from http://greenteapress.com/semaphores/LittleBookOfSemaphores.pdf.
+    """
+    def __init__(self):
+        self.counter = 0
+        self.mutex = BoundedSemaphore(value=1)
+
+    def lock(self, semaphore):
+        self.mutex.acquire()
+        self.counter += 1
+        if self.counter == 1:
+            semaphore.acquire()
+
+        self.mutex.release()
+
+    def unlock(self, semaphore):
+        self.mutex.acquire()
+        self.counter -= 1
+        if self.counter == 0:
+            semaphore.release()
+            
+        self.mutex.release()
+
+
 def search(list, value):
     """ Traverses the given list to find the given value.
         Blocks deletion.
