@@ -1,4 +1,4 @@
-import threading
+from threading import BoundedSemaphore, Thread
 import random
 import os
 from time import sleep
@@ -18,8 +18,8 @@ class LinkedList:
     """
     def __init__(self):
         self.head = None
-        self.block_insert_or_delete = threading.BoundedSemaphore(value=1)
-        self.block_search_or_delete = threading.BoundedSemaphore(value=1)
+        self.block_insert_or_delete = BoundedSemaphore(value=1)
+        self.block_search_or_delete = BoundedSemaphore(value=1)
 
 
 def search(list, value):
@@ -35,11 +35,13 @@ def search(list, value):
     while head is not None:
         if head.data == value:
             print "Found value " + str(value)
-            return
+            break
         else:
             head = head.next
 
-    print "Could not find value " + str(value)
+    # Reached the end of the list without finding the value
+    if head is None:
+        print "Could not find value " + str(value)
 
     # FIXME: Acquire mutex to block deleters without blocking other searchers
     # list.block_search_or_delete.release()
@@ -51,10 +53,10 @@ def insert(list, value):
     """
     print "Inserting " + str(value)
 
-    node = Node(value)
-
     # Acquire mutex
     list.block_insert_or_delete.acquire()
+
+    node = Node(value)
 
     if list.head is None:
         list.head = node
@@ -76,15 +78,15 @@ def delete(list, position):
     """
     print "Deleter released!"
 
-    head = list.head
-    last = list.head
-    current_position = 0
-
     # Acquire mutexes
     list.block_search_or_delete.acquire()
     list.block_insert_or_delete.acquire()
 
-    while head.next is not None:
+    head = list.head
+    last = list.head
+    current_position = 0
+
+    while head is not None:
         if current_position == position:
             last.next = head.next
             head = None
@@ -103,14 +105,14 @@ if __name__ == "__main__":
 
     for i in range(0, 10):
         # Start a new inserter, searcher, and deleter in their own respective threads
-        inserter = threading.Thread(target=insert, args=(list, i))
-        searcher = threading.Thread(target=search, args=(list, i))
-        deleter = threading.Thread(target=delete, args=(list))
+        inserter = Thread(target=insert, args=(list, i))
+        searcher = Thread(target=search, args=(list, i))
+        deleter = Thread(target=delete, args=(list, i))
 
         inserter.start()
         sleep(1)
         searcher.start()
-        # deleter.start()
+        deleter.start()
 
 
     # For Ctrl+C
