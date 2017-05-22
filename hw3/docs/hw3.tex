@@ -85,14 +85,11 @@
 \section{Project 2}
 
 \subsection{Design}
-To begin, we based the structure of our design off of a simple block driver written by Jonathan Corbet and modified by Pat Patterson at http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31, which was written for the 2.6.0 version of the kernel.
+To begin, we based the structure of our design off of a simple block driver written by Jonathan Corbet and modified by Pat Patterson at \url{http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31}, which was written for the 2.6.0 version of the kernel.
 
 In our design, we use a 32 bit key for the encryption. Because this is a block cypher, we knew that we could have more data being read/written
 than the amount of data that fits in one block. To accomodate for this, we encrypt/decrypt data in increments of block size.
-We implemented the data encryption/decryption in the transfer function, where data is transferred to and from the device. 
-
- \\
-
+We implemented the data encryption/decryption in the transfer function, where data is transferred to and from the device. \\
 
 
 \subsection{Answers}
@@ -100,25 +97,17 @@ We implemented the data encryption/decryption in the transfer function, where da
 % What do you think the main point of this assignment is?
 
 We think that the main point of this assignment was to learn how to work with the Linux Kernel's Crypto API, and to practice working with memory allocation.
-In this assignment, we created a RAM Disk device driver for the Linux Kernel and encrypted/decrypted data that is written and read by the device.
-
- \\
-
+In this assignment, we created a RAM Disk device driver for the Linux Kernel and encrypted/decrypted data that is written and read by the device. \\
 % How did you personally approach the problem? Design decisions, algorithm, etc.
 
 
-
- \\
-
 % TESTING DETAILS
 
- \\
 
 % What did you learn?
 
 Overall, we learned how to implement block device drivers in the Linux Kernel and also how to work with the Kernel's Crypto API.
-We also learned about the operations and methods that block devices have and use.
- \\
+We also learned about the operations and methods that block devices have and use. \\
 
 
 \subsection{Work Log}
