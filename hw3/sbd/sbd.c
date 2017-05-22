@@ -60,7 +60,7 @@ static struct sbd_device {
 	struct gendisk *gd;
 
 	/* ADDED: The following is added to sbd for encryption */
-	struct crypto_cipher *blockcipher;
+	struct crypto_blkcipher *blockcipher;
 	struct scatterlist sl[2];
 } Device;
 
@@ -129,6 +129,7 @@ static struct block_device_operations sbd_ops = {
 };
 
 static int __init sbd_init(void) {
+	int err;
 	/*
 	 * Set up our internal device.
 	 */
@@ -148,7 +149,7 @@ static int __init sbd_init(void) {
 
 	/* ADDED: Set block cipher to aes, and set the key */
 
-	Device.blockcipher = crypto_alloc_blockcipher(
+	Device.blockcipher = crypto_alloc_blkcipher(
 		"aes", CRYPTO_ALG_TYPE_ABLKCIPHER, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(Device.blockcipher)) {
         printk("sbd: Error setting blockcipher\n");
