@@ -85,7 +85,11 @@
 \section{Project 2}
 
 \subsection{Design}
+To begin, we based the structure of our design off of a simple block driver written by Jonathan Corbet and modified by Pat Patterson at http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31, which was written for the 2.6.0 version of the kernel.
 
+In our design, we use a 32 bit key for the encryption. Because this is a block cypher, we knew that we could have more data being read/written
+than the amount of data that fits in one block. To accomodate for this, we encrypt/decrypt data in increments of block size.
+We implemented the data encryption/decryption in the transfer function, where data is transferred to and from the device. 
 
  \\
 
@@ -101,6 +105,7 @@ In this assignment, we created a RAM Disk device driver for the Linux Kernel and
  \\
 
 % How did you personally approach the problem? Design decisions, algorithm, etc.
+
 
 
  \\
