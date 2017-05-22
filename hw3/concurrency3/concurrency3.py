@@ -26,6 +26,16 @@ class LinkedList:
         self.search_switch = LightSwitch()
         self.insert_switch = LightSwitch()
 
+    def __str__(self):
+        list_str = ""
+        head = self.head 
+        while head is not None:
+            list_str += "[ " + str(head.data) + " ] -> "
+            head = head.next
+        list_str += "Null"
+
+        return list_str
+
 
 class LightSwitch:
     """ Light switch pattern from http://greenteapress.com/semaphores/LittleBookOfSemaphores.pdf.
@@ -55,11 +65,11 @@ class LightSwitch:
         self.mutex.release()
 
 
-def search(list, value):
+def search(id, list, value):
     """ Traverses the given list to find the given value.
         Blocks deletion.
     """
-    print "Searching for " + str(value)
+    print "ID-" + str(id) + ": Searching for " + str(value)
 
     list.search_switch.lock(list.no_searcher)
 
@@ -67,24 +77,24 @@ def search(list, value):
     head = list.head
     while head is not None:
         if head.data == value:
-            print "Found value " + str(value)
+            print "ID-" + str(id) + ": Found value " + str(value)
             break
         else:
             head = head.next
 
     # Reached the end of the list without finding the value
     if head is None:
-        print "Could not find value " + str(value)
+        print "ID-" + str(id) + ": Could not find value " + str(value)
 
     list.search_switch.unlock(list.no_searcher)
 
 
 
-def insert(list, value):
+def insert(id, list, value):
     """ Adds a node with the given value to the end of the list.
         Blocks both insertion and deletion.
     """
-    print "Inserting " + str(value)
+    print "ID-" + str(id) + ": Inserting " + str(value)
 
     list.insert_mutex.acquire()
     list.insert_switch.lock(list.no_inserter)
@@ -100,18 +110,18 @@ def insert(list, value):
 
         list.head.next = node
 
-    print "Inserted new node with data " + str(value)
+    print "ID-" + str(id) + ": Inserted new node with data " + str(value) + ". New list: " + str(list)
 
     list.insert_mutex.release()
     list.insert_switch.unlock(list.no_inserter)
 
 
-def delete(list, position):
+def delete(id, list, position):
     """ Delete a node from the list at the given position. Assume the position
         is less than the length of the list.
         Blocks both insertion and search.
     """
-    print "Deleter released!"
+    print "ID-" + str(id) + ": Deleter released!"
 
     list.no_searcher.acquire()
     list.no_inserter.acquire()
@@ -125,7 +135,7 @@ def delete(list, position):
         if current_position == position:
             last.next = head.next
             head = None
-            print "Deleted node at position " + str(position)
+            print "ID-" + str(id) + ": Deleted node at position " + str(position) + ". New list: " + str(list)
             break
         else:
             last = head
@@ -137,19 +147,18 @@ def delete(list, position):
 
 if __name__ == "__main__":
     list = LinkedList()
-    num = 10
+    num = 3
 
     for i in range(0, num):
         # Start a new inserter, searcher, and deleter in their own respective threads
-        inserter = Thread(target=insert, args=(list, i))
-        searcher = Thread(target=search, args=(list, i))
-        deleter = Thread(target=delete, args=(list, i))
+        inserter = Thread(target=insert, args=(i, list, i))
+        searcher = Thread(target=search, args=(i + 1, list, i))
+        deleter = Thread(target=delete, args=(i + 2, list, i))
 
         inserter.start()
         sleep(1)
         searcher.start()
         deleter.start()
-
 
     # For Ctrl+C
     try:
