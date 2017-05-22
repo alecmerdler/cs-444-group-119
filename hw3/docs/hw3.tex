@@ -1,0 +1,178 @@
+\documentclass[journal, letterpaper, draftclsnofoot, onecolumn, 10pt]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\usepackage{alltt}
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+\usepackage{listings}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+\usepackage{placeins}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{textheight=8.5in, textwidth=6in}
+
+\lstset{
+  language=C,                % choose the language of the code
+  numbers=left,                   % where to put the line-numbers
+  stepnumber=1,                   % the step between two line-numbers.
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  tabsize=8,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                 % show the filename of files included with \lstinputlisting;
+}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\newcommand{\toc}{\tableofcontents}
+
+
+\def\name{Leon Leighton, Alec Merdler, Arthur Shing}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+   colorlinks = true,
+   urlcolor = black,
+   linkcolor = black,
+   pdfauthor = {\name},
+   pdfkeywords = {cs444 ``operating systems'' files filesystem I/O},
+   pdftitle = {CS 444 Project 2: I/O Elevators},
+   pdfsubject = {CS 444 Project 2},
+   pdfpagemode = UseNone
+}
+
+\parindent = 0.0 in
+\parskip = 0.1 in
+
+
+\begin{document}
+\title{Project 2: I/O Elevators}
+\author{Leon Leighton, Alec Merdler, and Arthur Shing}
+
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \centering
+    \maketitle
+    \begin{abstract}
+      This document provides an overview of the work done by Group 11-09 for Project 2: I/O Elevators.
+      It includes the design we used to implement the SSTF algorithm.
+      This includes answers to questions asked in the assignment description, a work log, and the git version control log.
+    \end{abstract}
+
+
+\end{titlepage}
+\pagenumbering{arabic}
+\tableofcontents
+\clearpage
+
+\section{Project 2}
+
+\subsection{Design}
+% Insertion sort
+
+We decided to implement a C-LOOK I/O scheduler. To begin, we thought the simplest way would be to use the existing noop-iosched.c file
+as our format and implement an insertion sort into the function where a request is added to the queue. This way, the queue would be
+sorted and ready for dispatching. In addition, because the No-op is a FIFO implementation and does not account for read/write head
+location, a shortest-seek-first implementation would require a way to include the last location and direction of the read/write head.
+ \\
+
+
+
+\subsection{Answers}
+
+% What do you think the main point of this assignment is?
+
+We think the main point of this assignment was to learn about I/O scheduling algorithms and to become familiar with implementing
+changes to the linux kernel. In this exercise, we had to look into various files in the kernel to understand how to implement
+the LOOK scheduler with the data structures provided in the kernel. Overall this assignment helped us in our understanding of
+how the operating system schedules I/O requests. \\
+
+
+% How did you personally approach the problem? Design decisions, algorithm, etc.
+
+
+Our implementation thus far adds a sorting algorithm such that the requests are added in a sorted order. We decided not to implement
+the sorting with respect to the location of the read/write head, meaning that the request queue is simply sorted in ascending order.
+We saw that we had two choices: to sort the request queue in accordance with the read/write head location and dispatch the head of
+the queue, or to sort it in ascending order and finding the correct request to dispatch according to the location and direction of
+the read/write head. We decided to implement the latter because it overall seemed easier to sort and dispatch. \\
+
+However, we have not implemented the dispatch function correctly. As a result, our current algorithm simply dispatches the request
+at the head of the queue like noop. \\ 
+
+
+% TESTING DETAILS
+To test our implementation, we generated I/O on the VM through a python script that reads files from the directories starting at the
+root directory ('/'). We then observed that the request were dispatched in queue in order of their sector numbers. We also used `dd'
+create files on the disk and observed the same behavior. \\
+
+
+
+Overall, we learned about I/O scheduling algorithms and running scripts on the VM. We learned a lot about data structures
+(specifically list\_head) in the kernel, as well as implementation of those data structures.\\
+
+\subsection{Work Log}
+We began work on 5/2. We revised our concurrency assignment 2 and began work on 5/4. We began by looking
+at the existing code and determining what it was that we needed to change. Because of time conflicts, the three of us were often unable
+to meet as a whole group, although we met in pairs. We cleaned up our implementation for the concurrency assignment on 5/6.
+We created our implementation for the I/O scheduler on 5/7-8.
+
+\clearpage
+\subsection{Version Control Log}
+
+
+
+\FloatBarrier
+% \begin{table}[h!]
+% \centering
+% \caption{Git Log}
+
+\scalebox{0.8}{
+\input{vclog.tex}}
+% % \label{git-log}
+% \begin{tabular}{|c|c|c|c|}
+%     \hline \textbf{Version} & \textbf{Author} & \textbf{Date} & \textbf{commit message}  \\
+%     \hline 1 & alecmerdler & 2017-04-30 & starting concurrency 2 \\
+%     \hline 1 & alecmerdler & 2017-05-06 & starting scheduler \\
+%     \hline 1 & alecmerdler & 2017-05-06 & cleanup \\
+%     \hline 1 & alecmerdler & 2017-05-06 & closer to dining philosopher's solution \\
+%     \hline 1 & alecmerdler & 2017-05-06 & improved docstrings\\
+%     \hline 1 & alecmerdler & 2017-05-06 & current implementation does not prevent deadlock \\
+%     \hline 1 & alecmerdler & 2017-05-06 & actually deadlock is prevented because of blocking call to get left fork \\
+%     \hline 1 & alecmerdler & 2017-05-07 & working on I/O scheduler \\
+%     \hline 1 & alecmerdler & 2017-05-07 & improving readme \\
+%     \hline 1 & alecmerdler & 2017-05-07 & adding documentation comments \\
+%     \hline 1 & alecmerdler & 2017-05-07 & more comments \\
+%     \hline 1 & alecmerdler & 2017-05-07 & added TA instructions/tips \\
+%     \hline 1 & alecmerdler & 2017-05-07 & improvements to readme\\
+%     \hline 1 & alecmerdler & 2017-05-07 & added Kconfig.iosched and Makefile based on instructions \\
+%     \hline 1 & Arthur Shing & 2017-05-08 & Cleaned up hw2 doc for editing\\
+%     \hline 1 & alecmerdler & 2017-05-08 & update readme\\
+%     \hline 1 & alecmerdler & 2017-05-08 & merged with master\\
+%     \hline 1 & alecmerdler & 2017-05-08 & better instructions\\
+%     \hline 1 & Arthur Shing & 2017-05-08 & Added initial responses \\
+%     \hline 1 & Arthur Shing & 2017-05-08 & Added comments on design problems \\
+%     \hline 1 & Lee Leighton & 2017-05-08 & Added hw2 patch \\
+%     \hline 1 & Lee Leighton & 2017-05-08 & Switch to using safe version of list\_for\_each \\
+%     \hline
+% \end{tabular}
+% \end{table}
+\FloatBarrier
+\end{document}
