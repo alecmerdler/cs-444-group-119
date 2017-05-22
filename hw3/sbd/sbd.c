@@ -22,6 +22,7 @@
 #include <linux/genhd.h>
 #include <linux/blkdev.h>
 #include <linux/hdreg.h>
+#include <linux/crypto.h> /* ADDED */
 
 MODULE_LICENSE("Dual BSD/GPL");
 static char *Version = "1.4";
@@ -33,11 +34,16 @@ module_param(logical_block_size, int, 0);
 static int nsectors = 1024; /* How big the drive is */
 module_param(nsectors, int, 0);
 
-/*
+/* ADDED: 32-bit key for use in encryption */
+static char *key = "hereisa32bitkeyforencryptdecrypt";/*
+
  * We can tweak our hardware sector size, but the kernel talks to us
  * in terms of small sectors, always.
  */
 #define KERNEL_SECTOR_SIZE 512
+
+/* ADDED: We'll be passing this value to several functions so defining it */
+#define KEY_SIZE 32
 
 /*
  * Our request queue.
@@ -52,6 +58,10 @@ static struct sbd_device {
 	spinlock_t lock;
 	u8 *data;
 	struct gendisk *gd;
+
+	/* ADDED: The following is added to sbd for encryption */
+	struct crypto_cipher *blockcipher;
+	struct scatterlist sl[2];
 } Device;
 
 /*
@@ -134,6 +144,23 @@ static int __init sbd_init(void) {
 	if (Queue == NULL)
 		goto out;
 	blk_queue_logical_block_size(Queue, logical_block_size);
+
+
+	/* ADDED: Set block cipher to aes, and set the key */
+
+	Device.blockcipher = crypto_alloc_blockcipher(
+		"aes", CRYPTO_ALG_TYPE_ABLKCIPHER, CRYPTO_ALG_ASYNC);
+	if (IS_ERR(Device.blockcipher)) {
+        printk("sbd: Error setting blockcipher\n");
+        goto free_mem;
+	}
+	err = crypto_cipher_setkey(Device.blockcipher, key, KEY_SIZE);
+	if (err != 0) {
+        printk("sbd: Error setting key");
+        goto free_mem;
+}
+
+
 	/*
 	 * Get registered.
 	 */
