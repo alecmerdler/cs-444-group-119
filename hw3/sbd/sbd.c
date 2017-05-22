@@ -34,8 +34,8 @@ module_param(logical_block_size, int, 0);
 static int nsectors = 1024; /* How big the drive is */
 module_param(nsectors, int, 0);
 
-/* ADDED: 32-bit key default for use in encryption */
-static char *key = "hereisa32bitkeyforencryptdecrypt";
+/* ADDED: 32-byte key default for use in encryption */
+static char *key = "hereis32bytekeyforencryptdecrypt";
 /* ADDED: Get real key from module param */
 module_param(key, charp, 0400);
 
