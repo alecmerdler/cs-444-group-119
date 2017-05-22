@@ -34,9 +34,13 @@ module_param(logical_block_size, int, 0);
 static int nsectors = 1024; /* How big the drive is */
 module_param(nsectors, int, 0);
 
-/* ADDED: 32-bit key for use in encryption */
-static char *key = "hereisa32bitkeyforencryptdecrypt";/*
+/* ADDED: 32-bit key default for use in encryption */
+static char *key = "hereisa32bitkeyforencryptdecrypt";
+/* ADDED: Get real key from module param */
+module_param(key, charp, 0400);
 
+
+/*
  * We can tweak our hardware sector size, but the kernel talks to us
  * in terms of small sectors, always.
  */
@@ -61,7 +65,7 @@ static struct sbd_device {
 
 	/* ADDED: The following is added to sbd for encryption */
 	struct crypto_cipher *blockcipher;
-	struct scatterlist sl[2];
+//	struct scatterlist sl[2];
 } Device;
 
 /*
@@ -72,14 +76,27 @@ static void sbd_transfer(struct sbd_device *dev, sector_t sector,
 	unsigned long offset = sector * logical_block_size;
 	unsigned long nbytes = nsect * logical_block_size;
 
+	/* ADDED: We will be incrementing our writes/reads by blocksize */
+	unsigned long blocksize = crypto_cipher_blocksize(dev->blockcipher);
+	int i;
+
 	if ((offset + nbytes) > dev->size) {
 		printk (KERN_NOTICE "sbd: Beyond-end write (%ld %ld)\n", offset, nbytes);
 		return;
 	}
+	/* ADDED: Encrypt or decrypt however many bytes we have incrementing 
+ 	* by crypto blocksize 
+	*/
 	if (write)
-		memcpy(dev->data + offset, buffer, nbytes);
+		for (i = 0; i < nbytes; i+= blocksize) {
+			crypto_cipher_encrypt_one(dev->blockcipher, 
+				&(dev->data + offset)[i], &buffer[i]);
+		}
 	else
-		memcpy(buffer, dev->data + offset, nbytes);
+		for (i = 0; i < nbytes; i+= blocksize) {
+			crypto_cipher_decrypt_one(dev->blockcipher, 
+				&buffer[i], &(dev->data + offset)[i]);
+		}
 }
 
 static void sbd_request(struct request_queue *q) {
