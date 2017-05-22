@@ -153,12 +153,12 @@ static int __init sbd_init(void) {
 		"aes", CRYPTO_ALG_TYPE_ABLKCIPHER, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(Device.blockcipher)) {
         printk("sbd: Error setting blockcipher\n");
-        goto free_mem;
+        goto out;
 	}
-	err = crypto_cipher_setkey(Device.blockcipher, key, KEY_SIZE);
+	err = crypto_blkcipher_setkey(Device.blockcipher, key, KEY_SIZE);
 	if (err != 0) {
         printk("sbd: Error setting key");
-        goto free_mem;
+        goto out;
 }
 
 
