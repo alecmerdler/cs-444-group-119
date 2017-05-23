@@ -1,0 +1,6 @@
+insmod sbd.ko
+shred -z /dev/sbd0
+mkfs.ext2 /dev/sbd0
+mount /dev/sbd0 /mnt
+echo 'hello' > /mnt/hello
+grep -a 'hello' /dev/sbd0
