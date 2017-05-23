@@ -100,6 +100,13 @@ We think that the main point of this assignment was to learn how to work with th
 In this assignment, we created a RAM Disk device driver for the Linux Kernel and encrypted/decrypted data that is written and read by the device. \\
 % How did you personally approach the problem? Design decisions, algorithm, etc.
 
+To approach the problem, it was important to first understand how block drivers work.
+By gleaning LDD3, we were able to understand the basic methods that the kernel calls to get the driver to process reads and writes on the device.
+After we wrote a sufficient block driver, we compiled it as a module (sbd.ko) and loaded it into the kernel with insmod sbd.ko.
+For encryption, we used AES as our algorithm and called the provided Crypto API using crypto\_alloc\_cipher().  
+
+
+
 
 % TESTING DETAILS
 
