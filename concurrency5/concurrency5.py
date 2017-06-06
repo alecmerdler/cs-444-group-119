@@ -78,7 +78,7 @@ def pusher(agent, ingredient):
                 agent.tobacco_semaphore.release()
 
             else:
-                agent.is_paper = False
+                agent.is_paper = True
 
             agent.mutex.release()
 
@@ -95,7 +95,7 @@ def pusher(agent, ingredient):
                 agent.tobacco_semaphore.release()
 
             else:
-                agent.is_match = False
+                agent.is_match = True
 
             agent.mutex.release()
 
