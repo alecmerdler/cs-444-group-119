@@ -1,4 +1,4 @@
-from threading import BoundedSemaphore, Thread
+from threading import Semaphore, Thread
 import os
 from time import sleep
 
@@ -8,39 +8,40 @@ class Agent:
         ingredients are currently on the table.
     """
     def __init__(self):
-        self.agent_semaphore = BoundedSemaphore(value=1)
-        self.tobacco = BoundedSemaphore(value=0)
-        self.paper = BoundedSemaphore(value=0)
-        self.match = BoundedSemaphore(value=0)
+        self.agent_semaphore = Semaphore(value=1)
+        self.tobacco = Semaphore(value=0)
+        self.paper = Semaphore(value=0)
+        self.match = Semaphore(value=0)
 
         # Indicate which ingredients are currently on the table
         self.is_tobacco = False
         self.is_paper = False
         self.is_match = False
 
-        self.tobacco_semaphore = BoundedSemaphore(value=0)
-        self.paper_semaphore = BoundedSemaphore(value=0)
-        self.match_semaphore = BoundedSemaphore(value=0)
+        self.tobacco_semaphore = Semaphore(value=0)
+        self.paper_semaphore = Semaphore(value=0)
+        self.match_semaphore = Semaphore(value=0)
 
-        self.mutex = BoundedSemaphore(value=1)
+        self.mutex = Semaphore(value=1)
 
 
 def smoker(agent, initial_ingredient):
     """ Represents a smoker, which has a given initial ingredient.
     """
-    if initial_ingredient == "tobacco":
-        agent.tobacco_semaphore.acquire()
-    elif initial_ingredient == "paper":
-        agent.paper_semaphore.acquire()
-    elif initial_ingredient == "match":
-        agent.match_semaphore.acquire()
+    while True:
+        if initial_ingredient == "tobacco":
+            agent.tobacco_semaphore.acquire()
+        elif initial_ingredient == "paper":
+            agent.paper_semaphore.acquire()
+        elif initial_ingredient == "match":
+            agent.match_semaphore.acquire()
 
-    # Critical section
-    print "Making cigarette"
+        # Critical section
+        print "Making cigarette"
 
-    agent.agent_semaphore.release()
+        agent.agent_semaphore.release()
 
-    print "Smoking"
+        print "Smoking"
 
 
 def pusher(agent, ingredient):
