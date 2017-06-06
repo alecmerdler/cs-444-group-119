@@ -69,11 +69,33 @@ def pusher(agent, ingredient):
             agent.paper.acquire()
             agent.mutex.acquire()
 
+            if agent.is_tobacco:
+                agent.is_tobacco = False
+                agent.match_semaphore.release()
+
+            elif agent.is_match:
+                agent.is_match = False
+                agent.tobacco_semaphore.release()
+
+            else:
+                agent.is_paper = False
+
             agent.mutex.release()
 
         elif ingredient == "match":
             agent.match.acquire()
             agent.mutex.acquire()
+
+            if agent.is_tobacco:
+                agent.is_tobacco = False
+                agent.paper_semaphore.release()
+
+            elif agent.is_paper:
+                agent.is_paper = False
+                agent.tobacco_semaphore.release()
+
+            else:
+                agent.is_match = False
 
             agent.mutex.release()
 
