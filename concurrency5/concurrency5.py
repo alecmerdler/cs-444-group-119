@@ -47,31 +47,46 @@ def pusher(agent, ingredient):
     """ Represents a pusher, which is a helper thread which responds to signals from the given agent,
         keep track of ingredients, and signal the appropriate smoker thread.
     """
-    if ingredient == "tobacco":
-        agent.tobacco.acquire()
-        agent.mutex.acquire()
+    while True:
+        if ingredient == "tobacco":
+            agent.tobacco.acquire()
+            agent.mutex.acquire()
 
-        if agent.is_paper:
-            agent.is_paper = False
-            agent.match_semaphore.release()
+            if agent.is_paper:
+                agent.is_paper = False
+                agent.match_semaphore.release()
 
-        elif agent.is_match:
-            agent.is_match = False
-            agent.paper_semaphore.release()
+            elif agent.is_match:
+                agent.is_match = False
+                agent.paper_semaphore.release()
 
-        else:
-            agent.is_tobacco = True
+            else:
+                agent.is_tobacco = True
 
-        agent.mutex.release()
+            agent.mutex.release()
 
-    elif ingredient == "paper":
-        agent.paper.acquire()
+        elif ingredient == "paper":
+            agent.paper.acquire()
+            agent.mutex.acquire()
 
-    elif ingredient == "match":
-        agent.match.acquire()
+            agent.mutex.release()
+
+        elif ingredient == "match":
+            agent.match.acquire()
+            agent.mutex.acquire()
+
+            agent.mutex.release()
 
 
 if __name__ == "__main__":
+    agent = Agent()
+    ingredients = ['tobacco', 'paper', 'match']
+    for ingredient in ingredients:
+        smoker_thread = Thread(target=smoker, args=(agent, ingredient))
+        pusher_thread = Thread(target=pusher, args=(agent, ingredient))
+
+        smoker_thread.start()
+        pusher_thread.start()
 
     # For Ctrl+C
     try:
