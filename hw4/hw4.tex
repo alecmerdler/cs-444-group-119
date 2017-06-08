@@ -1,0 +1,148 @@
+\documentclass[journal, letterpaper, draftclsnofoot, onecolumn, 10pt]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\usepackage{alltt}
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+\usepackage{listings}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+\usepackage{placeins}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{textheight=8.5in, textwidth=6in}
+
+\lstset{
+  language=C,                % choose the language of the code
+  numbers=left,                   % where to put the line-numbers
+  stepnumber=1,                   % the step between two line-numbers.
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  tabsize=8,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                 % show the filename of files included with \lstinputlisting;
+}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\newcommand{\toc}{\tableofcontents}
+
+
+\def\name{Leon Leighton, Alec Merdler, Arthur Shing}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+   colorlinks = true,
+   urlcolor = black,
+   linkcolor = black,
+   pdfauthor = {\name},
+   pdfkeywords = {cs444 ``operating systems'' slob slab best-fit},
+   pdftitle = {CS 444 Project 4: The SLOB SLAB},
+   pdfsubject = {CS 444 Project 4},
+   pdfpagemode = UseNone
+}
+
+\parindent = 0.0 in
+\parskip = 0.1 in
+
+
+\begin{document}
+\title{Project 4: The SLOB SLAB}
+\author{Leon Leighton, Alec Merdler, and Arthur Shing}
+
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \centering
+    \maketitle
+    \begin{abstract}
+      This document provides an overview of the work done by Group 11-09 for Project 4: The SLOB SLAB.
+      It includes the design we used to implement the encryption algorithm.
+      This includes answers to questions asked in the assignment description, a work log, and the git version control log.
+    \end{abstract}
+
+
+\end{titlepage}
+\pagenumbering{arabic}
+\tableofcontents
+\clearpage
+
+\section{Project 3}
+
+\subsection{Design}
+
+% Talk about the design and algorithm here
+
+\subsection{Answers}
+
+% What do you think the main point of this assignment is?
+
+We think that the main point of this assignment was to learn how to work with the Linux Kernel's Crypto API, and to practice working with memory allocation.
+In this assignment, we created a RAM Disk device driver for the Linux Kernel and encrypted/decrypted data that is written and read by the device. \\
+% How did you personally approach the problem? Design decisions, algorithm, etc.
+
+To approach the problem, it was important to first understand how block drivers work.
+By gleaning LDD3, we were able to understand the basic methods that the kernel calls to get the driver to process reads and writes on the device.
+After we wrote a sufficient block driver, we compiled it as a module (sbd.ko) and loaded it into the kernel with insmod sbd.ko.
+For encryption, we used AES as our algorithm and called the provided Crypto API using crypto\_alloc\_cipher(). \\
+
+% TESTING DETAILS
+
+To test our implementation, we compiled the block driver as a module and loaded it into the kernel.
+After loading it as a module, we write zeroes into the device. Then, we created a filesystem and mounted the device.
+We echoed some text into the device and then searched for the text, which did not print anything.
+This showed us that the text was encrypted.
+
+\begin{itemize}
+    \item insmod sbd.ko
+    \item shred -z /dev/sbd0
+    \item mkfs.ext2 /dev/sbd0
+    \item mount /dev/sbd0 /mnt
+    \item echo 'hello' > /mnt/hello
+    \item grep -a 'hello' /dev/sbd0
+\end{itemize}
+
+
+% What did you learn?
+
+Overall, we learned how to implement block device drivers in the Linux Kernel and also how to work with the Kernel's Crypto API.
+We also learned about the operations and methods that block devices have and use. \\
+
+
+\subsection{Work Log}
+We began work on the concurrency exercise in recitation. We worked on the concurrency exercise over the next few days.
+We used existing code to create a template for the block driver on and had a usable driver on 5/21.
+We set up the encryption/decryption on 5/22 and tested it the same day.
+
+
+
+\clearpage
+\subsection{Version Control Log}
+
+
+
+\FloatBarrier
+
+
+
+\scalebox{0.8}{
+\input{vclog.tex}}
+
+
+\FloatBarrier
+\end{document}
