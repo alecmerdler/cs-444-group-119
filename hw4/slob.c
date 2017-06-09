@@ -271,7 +271,6 @@ static void *slob_page_alloc(struct page *sp, size_t size, int align)
  */
 static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 {
-	printk("Entered slob_alloc\n");
 	struct page *sp;
 	struct page *sp_best = NULL;
 	struct list_head *prev;
@@ -305,7 +304,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
  		 * If the new page (sp->units) is smaller than what we have
  		 * (sp_best->units) then it is a better fit. 
 		 */
-		if ((sp_best = NULL) || (sp_best->units > sp->units))
+		if ((sp_best == NULL) || (sp_best->units > sp->units))
 			sp_best = sp;
 
 	}
@@ -358,7 +357,6 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
  */
 static void slob_free(void *block, int size)
 {
-	printk("Entered slob_free\n");
 	struct page *sp;
 	slob_t *prev, *next, *b = (slob_t *)block;
 	slobidx_t units;
