@@ -108,12 +108,14 @@ In this assignment, we modified the SLOB allocator algorithm from a first-fit to
 To design a working implentation for the best-fit allocation algorithm, we first inspected the existing slob.c code to see how the first-fit algorithm worked.
 We saw that the slob was iterating through the list of partially free pages, and skipping allocation attempts for pages that didn't have enough room until a suitable page was found.
 To change this to a best-fit algorithm, we moved the allocation attempt to outside the list\_for\_each\_entry() iteration, and added a new variable sp\_best that holds the current most suitable page.
-Upon iterating through the whole list of partially free pages, the most suitable page would be found and an allocation attempt could be made to it. \\
+Upon iterating through the whole list of partially free pages, the most suitable page would be found and an allocation attempt could be made to it. If no suitable page was found, then a new page is allocated. \\
 
 
 \subsubsection{Testing Details}
 
 % TESTING DETAILS
+To test our implementation, we included two syscalls that return free memory and used memory. These were defined as mem\_free and mem\_used.
+We created a test program that prints fragmentation and free/used memory. We used this to compare the fragmentation differences between the two algorithms. \\
 
 
 
@@ -124,7 +126,7 @@ We also learned about first-fit and best-fit algorithms, and how a best-fit algo
 
 
 \subsection{Work Log}
-
+We came up with our design on the afternoon of June 8th and began work in the evening. We implemented our changes to the SLOB algorithm and worked on testing the next morning.
 
 
 \clearpage
