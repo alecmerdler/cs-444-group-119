@@ -71,7 +71,7 @@
 #include <trace/events/kmem.h>
 
 #include <linux/atomic.h>
-
+#include <linux/syscalls.h>
 #include "slab.h"
 /*
  * slob_block has a field 'units', which indicates size of block if +ve,
@@ -91,6 +91,10 @@ struct slob_block {
 	slobidx_t units;
 };
 typedef struct slob_block slob_t;
+
+/* Used for sys calls */
+unsigned long mem_slob_free = 0;
+unsigned long mem_slob_used = 0;
 
 /*
  * All partially free slob pages go on these lists.
@@ -267,6 +271,7 @@ static void *slob_page_alloc(struct page *sp, size_t size, int align)
  */
 static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 {
+	printk("Entered slob_alloc\n");
 	struct page *sp;
 	struct page *sp_best = NULL;
 	struct list_head *prev;
@@ -300,12 +305,27 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
  		 * If the new page (sp->units) is smaller than what we have
  		 * (sp_best->units) then it is a better fit. 
 		 */
-		if ((sp_best = NULL) !! (sp_best->units > sp->units))
-			sb_best = sp;
+		if ((sp_best = NULL) || (sp_best->units > sp->units))
+			sp_best = sp;
 
 	}
 	/* Attempt to alloc */
-	b = slob_page_alloc(sp_best, size, align);
+	if (sp_best != NULL) {
+		b = slob_page_alloc(sp_best, size, align);
+		mem_slob_used += size;
+	}
+
+	/* Recalculate free space */
+	mem_slob_free = 0;
+	list_for_each_entry(sp, &free_slob_small, list) {
+		mem_slob_free += sp->units;
+	}
+	list_for_each_entry(sp, &free_slob_medium, list) {
+		mem_slob_free += sp->units;
+	}
+	list_for_each_entry(sp, &free_slob_large, list) {
+		mem_slob_free += sp->units;
+	}
 
 	spin_unlock_irqrestore(&slob_lock, flags);
 
@@ -324,6 +344,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 		set_slob(b, SLOB_UNITS(PAGE_SIZE), b + SLOB_UNITS(PAGE_SIZE));
 		set_slob_page_free(sp, slob_list);
 		b = slob_page_alloc(sp, size, align);
+		mem_slob_used += size;
 		BUG_ON(!b);
 		spin_unlock_irqrestore(&slob_lock, flags);
 	}
@@ -337,6 +358,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
  */
 static void slob_free(void *block, int size)
 {
+	printk("Entered slob_free\n");
 	struct page *sp;
 	slob_t *prev, *next, *b = (slob_t *)block;
 	slobidx_t units;
@@ -415,6 +437,22 @@ static void slob_free(void *block, int size)
 	}
 out:
 	spin_unlock_irqrestore(&slob_lock, flags);
+	mem_slob_used -= size;
+}
+
+/*
+ * system calls
+ */
+
+SYSCALL_DEFINE0(mem_free)
+{
+	return mem_slob_free;
+}
+
+SYSCALL_DEFINE0(mem_used)
+{
+
+	return mem_slob_used;
 }
 
 /*
