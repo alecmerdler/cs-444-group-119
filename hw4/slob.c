@@ -94,7 +94,7 @@ typedef struct slob_block slob_t;
 
 /* Used for sys calls */
 unsigned long mem_slob_free = 0;
-unsigned long mem_slob_used = 0;
+unsigned long mem_slob_count = 0;
 
 /*
  * All partially free slob pages go on these lists.
@@ -311,7 +311,6 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 	/* Attempt to alloc */
 	if (sp_best != NULL) {
 		b = slob_page_alloc(sp_best, size, align);
-		mem_slob_used += size;
 	}
 
 	/* Recalculate free space */
@@ -343,7 +342,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 		set_slob(b, SLOB_UNITS(PAGE_SIZE), b + SLOB_UNITS(PAGE_SIZE));
 		set_slob_page_free(sp, slob_list);
 		b = slob_page_alloc(sp, size, align);
-		mem_slob_used += size;
+		mem_slob_count++; // new page
 		BUG_ON(!b);
 		spin_unlock_irqrestore(&slob_lock, flags);
 	}
@@ -380,6 +379,7 @@ static void slob_free(void *block, int size)
 		__ClearPageSlab(sp);
 		page_mapcount_reset(sp);
 		slob_free_pages(b, 0);
+		mem_slob_count--;
 		return;
 	}
 
@@ -435,7 +435,6 @@ static void slob_free(void *block, int size)
 	}
 out:
 	spin_unlock_irqrestore(&slob_lock, flags);
-	mem_slob_used -= size;
 }
 
 /*
@@ -450,7 +449,7 @@ SYSCALL_DEFINE0(mem_free)
 SYSCALL_DEFINE0(mem_used)
 {
 
-	return mem_slob_used;
+	return (SLOB_UNITS(PAGE_SIZE) * mem_slob_count);
 }
 
 /*
