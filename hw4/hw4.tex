@@ -72,8 +72,8 @@
     \maketitle
     \begin{abstract}
       This document provides an overview of the work done by Group 11-09 for Project 4: The SLOB SLAB.
-      It includes the design we used to implement the encryption algorithm.
-      This includes answers to questions asked in the assignment description, a work log, and the git version control log.
+      It includes the design we used for implementing a best-fit algorithm into slob.c.
+      It also includes answers to the questions included in the assignment and details on the testing procedure.
     \end{abstract}
 
 
@@ -82,7 +82,7 @@
 \tableofcontents
 \clearpage
 
-\section{Project 3}
+\section{Project 4}
 
 \subsection{Design}
 
@@ -101,7 +101,7 @@ We think that the main point of this assignment was to learn how the Linux kerne
 In this assignment, we modified the SLOB allocator algorithm from a first-fit to a best-fit algorithm, in hopes to optimize performance and avoid memory fragmentation. \\
 
 
-\subsubsection{How did you personally approach the problem? Design decisions, algorithm, etc.}
+\subsubsection{How did you personally approach the problem?}
 
 
 
@@ -114,10 +114,23 @@ Upon iterating through the whole list of partially free pages, the most suitable
 \subsubsection{Testing Details}
 
 % TESTING DETAILS
-To test our implementation, we included two syscalls that return free memory and used memory. These were defined as mem\_free and mem\_used.
-We created a test program that prints fragmentation and free/used memory. We used this to compare the fragmentation differences between the two algorithms. \\
+To test our implementation, we included two syscalls that return total and used memory. These were defined respectively as mem\_size and mem\_used.
+We created a test program (test.c) that allocates memory into buffers prints fragmentation and used/total memory. We used this to compare the fragmentation differences between the two algorithms.
+The results can be found in the file hw4-stats, and are as follows: \\
+\clearpage
+\begin{verbatim}
+    bestfit:
+    psize: 227639296
+    pused:  26737030
+    11.75%
 
+    firstfit:
+    psize: 27717632
+    pused: 10662801
+    38.47%
+\end{verbatim}
 
+The variable psize is the total amount of space, and pused is the amount of used space. As it stands, we found that the best-fit algorithm had a lower fragmentation than the first-fit.
 
 \subsubsection{What did you learn?}
 
@@ -126,6 +139,7 @@ We also learned about first-fit and best-fit algorithms, and how a best-fit algo
 
 
 \subsection{Work Log}
+We looked into the existing slob.c code before we came together to design our implentation.
 We came up with our design on the afternoon of June 8th and began work in the evening. We implemented our changes to the SLOB algorithm and worked on testing the next morning.
 
 
