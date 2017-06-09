@@ -95,22 +95,29 @@ Instead, the list will be iterated through in search of a suitable page, and eac
 
 \subsection{Answers}
 
-% What do you think the main point of this assignment is?
+\subsubsection{What do you think the main point of this assignment is?}
 
 We think that the main point of this assignment was to learn how the Linux kernel allocates memory, particularly with the SLOB allocator.
 In this assignment, we modified the SLOB allocator algorithm from a first-fit to a best-fit algorithm, in hopes to optimize performance and avoid memory fragmentation. \\
-% How did you personally approach the problem? Design decisions, algorithm, etc.
+
+
+\subsubsection{How did you personally approach the problem? Design decisions, algorithm, etc.}
+
+
+
 To design a working implentation for the best-fit allocation algorithm, we first inspected the existing slob.c code to see how the first-fit algorithm worked.
 We saw that the slob was iterating through the list of partially free pages, and skipping allocation attempts for pages that didn't have enough room until a suitable page was found.
-To change this to a best-fit algorithm, we moved the allocation attempt to outside the list_for_each_entry() iteration, and added a new variable sp_best that holds the current most suitable page.
+To change this to a best-fit algorithm, we moved the allocation attempt to outside the list\_for\_each\_entry() iteration, and added a new variable sp\_best that holds the current most suitable page.
 Upon iterating through the whole list of partially free pages, the most suitable page would be found and an allocation attempt could be made to it. \\
 
+
+\subsubsection{Testing Details}
 
 % TESTING DETAILS
 
 
 
-% What did you learn?
+\subsubsection{What did you learn?}
 
 Overall, we learned about the SLOB allocator in the Linux kernel and how the kernel allocates memory.
 We also learned about first-fit and best-fit algorithms, and how a best-fit algorithm can avoid loss of performance. \\
