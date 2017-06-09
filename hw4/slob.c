@@ -93,8 +93,8 @@ struct slob_block {
 typedef struct slob_block slob_t;
 
 /* Used for sys calls */
-unsigned long mem_slob_free = 0;
-unsigned long mem_slob_count = 0;
+unsigned long mem_slob_size = 0;
+unsigned long mem_slob_used = 0;
 
 /*
  * All partially free slob pages go on these lists.
@@ -205,6 +205,7 @@ static void *slob_new_pages(gfp_t gfp, int order, int node)
 	if (!page)
 		return NULL;
 
+	mem_slob_size += PAGE_SIZE;
 	return page_address(page);
 }
 
@@ -212,6 +213,8 @@ static void slob_free_pages(void *b, int order)
 {
 	if (current->reclaim_state)
 		current->reclaim_state->reclaimed_slab += 1 << order;
+
+	mem_slob_size -= PAGE_SIZE;
 	free_pages((unsigned long)b, order);
 }
 
@@ -259,6 +262,7 @@ static void *slob_page_alloc(struct page *sp, size_t size, int align)
 			sp->units -= units;
 			if (!sp->units)
 				clear_slob_page_free(sp);
+				mem_slob_used += units;
 			return cur;
 		}
 		if (slob_last(cur))
@@ -313,7 +317,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 		b = slob_page_alloc(sp_best, size, align);
 	}
 
-	/* Recalculate free space */
+	/* Recalculate free space 
 	mem_slob_free = 0;
 	list_for_each_entry(sp, &free_slob_small, list) {
 		mem_slob_free += sp->units;
@@ -324,6 +328,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 	list_for_each_entry(sp, &free_slob_large, list) {
 		mem_slob_free += sp->units;
 	}
+	*/
 
 	spin_unlock_irqrestore(&slob_lock, flags);
 
@@ -342,7 +347,6 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 		set_slob(b, SLOB_UNITS(PAGE_SIZE), b + SLOB_UNITS(PAGE_SIZE));
 		set_slob_page_free(sp, slob_list);
 		b = slob_page_alloc(sp, size, align);
-		mem_slob_count++; // new page
 		BUG_ON(!b);
 		spin_unlock_irqrestore(&slob_lock, flags);
 	}
@@ -379,7 +383,6 @@ static void slob_free(void *block, int size)
 		__ClearPageSlab(sp);
 		page_mapcount_reset(sp);
 		slob_free_pages(b, 0);
-		mem_slob_count--;
 		return;
 	}
 
@@ -405,6 +408,7 @@ static void slob_free(void *block, int size)
 	 * point.
 	 */
 	sp->units += units;
+	mem_slob_used -= units;
 
 	if (b < (slob_t *)sp->freelist) {
 		if (b + units == sp->freelist) {
@@ -441,15 +445,15 @@ out:
  * system calls
  */
 
-SYSCALL_DEFINE0(mem_free)
+SYSCALL_DEFINE0(mem_size)
 {
-	return mem_slob_free;
+	return mem_slob_size;
 }
 
 SYSCALL_DEFINE0(mem_used)
 {
 
-	return (SLOB_UNITS(PAGE_SIZE) * mem_slob_count);
+	return mem_slob_used;
 }
 
 /*
