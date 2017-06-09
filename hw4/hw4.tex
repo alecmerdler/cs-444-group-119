@@ -87,47 +87,36 @@
 \subsection{Design}
 
 % Talk about the design and algorithm here
+The existing SLOB allocator uses a first-fit algorithm. What this means is that the first available page with enough memory is used for allocation.
+To change this into a best-fit algorithm, we will change the algorithm so that it does not stop and allocate upon finding a suitable page.
+Instead, the list will be iterated through in search of a suitable page, and each time a more suitable page is found it will choose that one instead.
+% To test, we will
+
 
 \subsection{Answers}
 
 % What do you think the main point of this assignment is?
 
-We think that the main point of this assignment was to learn how to work with the Linux Kernel's Crypto API, and to practice working with memory allocation.
-In this assignment, we created a RAM Disk device driver for the Linux Kernel and encrypted/decrypted data that is written and read by the device. \\
+We think that the main point of this assignment was to learn how the Linux kernel allocates memory, particularly with the SLOB allocator.
+In this assignment, we modified the SLOB allocator algorithm from a first-fit to a best-fit algorithm, in hopes to optimize performance and avoid memory fragmentation. \\
 % How did you personally approach the problem? Design decisions, algorithm, etc.
+To design a working implentation for the best-fit allocation algorithm, we first inspected the existing slob.c code to see how the first-fit algorithm worked.
+We saw that the slob was iterating through the list of partially free pages, and skipping allocation attempts for pages that didn't have enough room until a suitable page was found.
+To change this to a best-fit algorithm, we moved the allocation attempt to outside the list_for_each_entry() iteration, and added a new variable sp_best that holds the current most suitable page.
+Upon iterating through the whole list of partially free pages, the most suitable page would be found and an allocation attempt could be made to it. \\
 
-To approach the problem, it was important to first understand how block drivers work.
-By gleaning LDD3, we were able to understand the basic methods that the kernel calls to get the driver to process reads and writes on the device.
-After we wrote a sufficient block driver, we compiled it as a module (sbd.ko) and loaded it into the kernel with insmod sbd.ko.
-For encryption, we used AES as our algorithm and called the provided Crypto API using crypto\_alloc\_cipher(). \\
 
 % TESTING DETAILS
 
-To test our implementation, we compiled the block driver as a module and loaded it into the kernel.
-After loading it as a module, we write zeroes into the device. Then, we created a filesystem and mounted the device.
-We echoed some text into the device and then searched for the text, which did not print anything.
-This showed us that the text was encrypted.
-
-\begin{itemize}
-    \item insmod sbd.ko
-    \item shred -z /dev/sbd0
-    \item mkfs.ext2 /dev/sbd0
-    \item mount /dev/sbd0 /mnt
-    \item echo 'hello' > /mnt/hello
-    \item grep -a 'hello' /dev/sbd0
-\end{itemize}
 
 
 % What did you learn?
 
-Overall, we learned how to implement block device drivers in the Linux Kernel and also how to work with the Kernel's Crypto API.
-We also learned about the operations and methods that block devices have and use. \\
+Overall, we learned about the SLOB allocator in the Linux kernel and how the kernel allocates memory.
+We also learned about first-fit and best-fit algorithms, and how a best-fit algorithm can avoid loss of performance. \\
 
 
 \subsection{Work Log}
-We began work on the concurrency exercise in recitation. We worked on the concurrency exercise over the next few days.
-We used existing code to create a template for the block driver on and had a usable driver on 5/21.
-We set up the encryption/decryption on 5/22 and tested it the same day.
 
 
 
